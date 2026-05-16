@@ -50,4 +50,12 @@ describe("ranking service", () => {
 
     expect(() => service.save("viewer", "other-test", ["denmark"])).toThrow("rankingIds must belong to contestId");
   });
+
+  it("rejects duplicate and non-string ranking IDs", () => {
+    const { service, db } = createTestService();
+    currentDb = db;
+
+    expect(() => service.save("viewer", "esc-test", ["denmark", "denmark"])).toThrow("rankingIds cannot contain duplicates");
+    expect(() => service.save("viewer", "esc-test", ["denmark", 10])).toThrow("rankingIds must contain non-empty strings");
+  });
 });

@@ -12,6 +12,8 @@ export type Entry = {
   fallbackPhotoUrl?: string;
   forceFlag?: boolean;
   exactImageOnly?: boolean;
+  resultRank?: number;
+  resultPoints?: number;
 };
 
 export type Contest = {

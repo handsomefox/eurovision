@@ -68,6 +68,11 @@ export default function RankingCard({ item, rank, image, moveUp, moveDown, moveT
             <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-bold text-white/75">
               Running #{String(item.order).padStart(2, "0")}
             </span>
+            {item.resultRank !== undefined && item.resultPoints !== undefined && (
+              <span className="rounded-full bg-amber-300/15 px-2.5 py-1 text-xs font-bold text-amber-100 ring-1 ring-amber-200/20">
+                Official #{item.resultRank} · {item.resultPoints} pts
+              </span>
+            )}
             <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-bold text-white/75 ring-1 ring-white/10">
               {item.country}
             </span>

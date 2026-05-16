@@ -1,4 +1,4 @@
-import { useState, type FocusEvent } from "react";
+import { useEffect, useState, type FocusEvent } from "react";
 import type { Entry, WikiImage } from "../types";
 
 type PhotoProps = {
@@ -17,6 +17,10 @@ export default function Photo({ item, image, compact = false, rank, total, onRan
   const [imageBroken, setImageBroken] = useState(false);
   const imageSrc = image?.src ?? null;
   const shouldShowPhoto = Boolean(imageSrc && !imageBroken);
+
+  useEffect(() => {
+    setImageBroken(false);
+  }, [imageSrc]);
 
   return (
     <div
