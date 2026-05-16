@@ -4,7 +4,7 @@
 #
 
 app = 'eurovision'
-primary_region = 'iad'
+primary_region = 'fra'
 
 [build]
 
