@@ -1,4 +1,4 @@
-import { Copy, Plus } from "lucide-react";
+import { ExternalLink, Plus } from "lucide-react";
 import { getTheme } from "../lib/themes";
 import { songWikiUrl } from "../lib/wiki";
 import type { Entry, WikiImage } from "../types";
@@ -8,10 +8,9 @@ type AddCardProps = {
   item: Entry;
   image?: WikiImage;
   add: () => void;
-  copyLink: (url: string) => void;
 };
 
-export default function AddCard({ item, image, add, copyLink }: AddCardProps) {
+export default function AddCard({ item, image, add }: AddCardProps) {
   const theme = getTheme(item);
 
   return (
@@ -35,13 +34,14 @@ export default function AddCard({ item, image, add, copyLink }: AddCardProps) {
             <span className="inline-flex h-6 items-center rounded-full bg-white/10 px-2 ring-1 ring-white/10" title={item.country}>
               <img src={`https://flagcdn.com/w40/${item.code}.png`} alt={item.country} className="h-3.5 w-5 rounded-[2px] object-cover" />
             </span>
-            <button
-              type="button"
-              onClick={() => copyLink(songWikiUrl(item))}
+            <a
+              href={songWikiUrl(item)}
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-bold text-cyan-100/80 hover:bg-white/15"
             >
-              <Copy className="h-3 w-3" /> copy wiki
-            </button>
+              <ExternalLink className="h-3 w-3" /> wiki
+            </a>
           </div>
         </div>
 

@@ -1,7 +1,8 @@
-import { Copy, RotateCcw, Search, SkipForward, Trophy, X } from "lucide-react";
+import { Copy, RotateCcw, Search, SkipForward, Trophy, Upload, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { loadRanking, saveRanking } from "../lib/api";
 import { copyToClipboard } from "../lib/clipboard";
+import { parseRankingImport } from "../lib/importRanking";
 import { normalize, useWikiImages } from "../lib/wiki";
 import type { Contest, Entry } from "../types";
 import AddCard from "./AddCard";
@@ -40,7 +41,8 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
   const [rankingIds, setRankingIds] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [copied, setCopied] = useState(false);
-  const [copiedLink, setCopiedLink] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
+  const [importText, setImportText] = useState("");
   const [loadStatus, setLoadStatus] = useState<LoadStatus>("loading");
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const lastSavedJson = useRef("[]");
@@ -53,7 +55,8 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
   useEffect(() => {
     setQuery("");
     setCopied(false);
-    setCopiedLink(false);
+    setIsImportOpen(false);
+    setImportText("");
     setRankingIds([]);
     setLoadStatus("loading");
     setSaveStatus("idle");
@@ -123,6 +126,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
 
   const nextByRunningOrder = useMemo(() => entries.find((item) => !rankedIdSet.has(item.id)), [entries, rankedIdSet]);
   const currentTop = rankedItems[0];
+  const importPreview = useMemo(() => parseRankingImport(importText, entries), [entries, importText]);
 
   function add(id: string) {
     setRankingIds((current) => (current.includes(id) ? current : [...current, id]));
@@ -149,13 +153,14 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
     setRankingIds([]);
     setQuery("");
     setCopied(false);
-    setCopiedLink(false);
   }
 
-  async function copyLink(url: string) {
-    await copyToClipboard(url);
-    setCopiedLink(true);
-    window.setTimeout(() => setCopiedLink(false), 1600);
+  function applyImport() {
+    if (!importPreview.ids.length) return;
+
+    setRankingIds(importPreview.ids);
+    setQuery("");
+    setIsImportOpen(false);
   }
 
   async function copyRanking() {
@@ -249,7 +254,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
             </div>
           )}
 
-          <div className="mt-5 grid gap-3 md:grid-cols-[1fr_auto_auto_auto]">
+          <div className="mt-5 grid gap-3 md:grid-cols-[1fr_auto_auto_auto_auto]">
             <label className="relative block">
               <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
               <input
@@ -282,9 +287,15 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
               className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-4 text-sm font-extrabold leading-none text-slate-950 transition hover:bg-cyan-200"
             >
               <Copy className="h-4 w-4 shrink-0" />
-              <span className="translate-y-[0.5px]">
-                {copied ? "Топ скопирован" : copiedLink ? "Ссылка скопирована" : "Скопировать топ"}
-              </span>
+              <span className="translate-y-[0.5px]">{copied ? "Топ скопирован" : "Скопировать топ"}</span>
+            </button>
+
+            <button
+              onClick={() => setIsImportOpen(true)}
+              className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-white/10 px-4 text-sm font-extrabold leading-none text-white ring-1 ring-white/10 transition hover:bg-white/15"
+            >
+              <Upload className="h-4 w-4 shrink-0" />
+              <span className="translate-y-[0.5px]">Импорт</span>
             </button>
 
             <button
@@ -324,7 +335,6 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                     isFirst={index === 0}
                     isLast={index === rankedItems.length - 1}
                     total={rankedItems.length}
-                    copyLink={copyLink}
                   />
                 ))}
               </div>
@@ -347,7 +357,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
 
             <div className="max-h-[72vh] space-y-3 overflow-y-auto pr-1">
               {availableItems.map((item) => (
-                <AddCard key={item.id} item={item} image={images[item.id]} add={() => add(item.id)} copyLink={copyLink} />
+                <AddCard key={item.id} item={item} image={images[item.id]} add={() => add(item.id)} />
               ))}
               {!availableItems.length && (
                 <div className="rounded-3xl border border-white/10 bg-white/8 p-6 text-center text-sm font-semibold text-white/55 backdrop-blur-xl">
@@ -358,9 +368,67 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
           </aside>
         </div>
 
+        {isImportOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 px-4 py-6 backdrop-blur-sm">
+            <section className="w-full max-w-2xl rounded-[2rem] border border-white/10 bg-slate-950 p-4 shadow-2xl shadow-black/40 sm:p-5">
+              <div className="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-extrabold tracking-[-0.006em]">Импорт рейтинга</h2>
+                  <p className="mt-1 text-sm leading-6 text-white/60">Вставь нумерованный список в формате “страна: артист - песня”.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsImportOpen(false)}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/15"
+                  aria-label="Close import"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <textarea
+                value={importText}
+                onChange={(event) => setImportText(event.target.value)}
+                className="min-h-72 w-full resize-y rounded-2xl border border-white/10 bg-black/30 p-3 text-sm font-semibold leading-6 text-white outline-none placeholder:text-white/35 focus:border-cyan-200/60"
+                placeholder="1. 🇩🇰 Denmark: Søren Torpegaard Lund - Før Vi Går Hjem"
+              />
+
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm font-semibold text-white/60">
+                <span>
+                  Найдено: {importPreview.ids.length}/{entries.length}
+                  {importPreview.unmatchedLines.length ? ` · не распознано: ${importPreview.unmatchedLines.length}` : ""}
+                </span>
+                {importPreview.unmatchedLines.length > 0 && (
+                  <span className="max-w-full truncate text-amber-100">
+                    Проверь: {importPreview.unmatchedLines.slice(0, 2).join(" · ")}
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-4 flex flex-wrap justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsImportOpen(false)}
+                  className="h-11 rounded-2xl bg-white/10 px-4 text-sm font-extrabold text-white ring-1 ring-white/10 transition hover:bg-white/15"
+                >
+                  Отмена
+                </button>
+                <button
+                  type="button"
+                  onClick={applyImport}
+                  disabled={!importPreview.ids.length}
+                  className="h-11 rounded-2xl bg-cyan-300 px-4 text-sm font-extrabold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Заменить рейтинг
+                </button>
+              </div>
+            </section>
+          </div>
+        )}
+
         <footer className="mt-5 rounded-3xl border border-white/10 bg-white/8 p-4 text-sm leading-6 text-white/60 backdrop-blur-xl">
-          Рейтинг сохраняется на сервере для выбранного ключа и конкурса. Для wiki есть copy-кнопки: можно скопировать ссылку и открыть
-          вручную. Если фото не нашлось или оно сомнительное, показывается флаг-заглушка.
+          Рейтинг сохраняется на сервере для выбранного ключа и конкурса. Wiki-кнопки открывают страницы напрямую. Если фото не нашлось или
+          оно сомнительное, показывается флаг-заглушка.
         </footer>
       </section>
     </main>

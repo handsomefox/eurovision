@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, Copy, ExternalLink, Music2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ExternalLink, Music2 } from "lucide-react";
 import type { FocusEvent } from "react";
 import { getTheme } from "../lib/themes";
 import { songWikiUrl, wikiUrl } from "../lib/wiki";
@@ -15,10 +15,9 @@ type RankingCardProps = {
   isFirst: boolean;
   isLast: boolean;
   total: number;
-  copyLink: (url: string) => void;
 };
 
-export default function RankingCard({ item, rank, image, moveUp, moveDown, moveTo, isFirst, isLast, total, copyLink }: RankingCardProps) {
+export default function RankingCard({ item, rank, image, moveUp, moveDown, moveTo, isFirst, isLast, total }: RankingCardProps) {
   const theme = getTheme(item);
 
   function applyManualRank(event: FocusEvent<HTMLInputElement>) {
@@ -81,20 +80,22 @@ export default function RankingCard({ item, rank, image, moveUp, moveDown, moveT
           </p>
 
           <div className="mt-2 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => copyLink(songWikiUrl(item))}
+            <a
+              href={songWikiUrl(item)}
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex items-center gap-1 rounded-full bg-cyan-300/10 px-2.5 py-1 text-xs font-semibold text-cyan-100 hover:bg-cyan-300/20"
             >
-              <Copy className="h-3 w-3" /> Copy song wiki
-            </button>
-            <button
-              type="button"
-              onClick={() => copyLink(wikiUrl(item))}
+              <ExternalLink className="h-3 w-3" /> Open song wiki
+            </a>
+            <a
+              href={wikiUrl(item)}
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white/70 hover:bg-white/15 hover:text-white"
             >
-              <ExternalLink className="h-3 w-3" /> Copy source
-            </button>
+              <ExternalLink className="h-3 w-3" /> Open artist wiki
+            </a>
           </div>
         </div>
 

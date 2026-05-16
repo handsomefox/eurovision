@@ -1,24 +1,30 @@
+import type Database from "better-sqlite3";
 import { Router } from "express";
 import { createHash } from "node:crypto";
 
 const MAX_RANKING_LENGTH = 100;
 
-function hashUserKey(key) {
+type RankingRow = {
+  ranking_json: string;
+  updated_at: string;
+};
+
+function hashUserKey(key: string): string {
   return createHash("sha256").update(key).digest("hex");
 }
 
-function cleanKey(value) {
+function cleanKey(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function validateContestId(value) {
+function validateContestId(value: unknown): string | null {
   if (typeof value !== "string" || !value.trim()) {
     return "contestId is required";
   }
   return null;
 }
 
-function validateRankingIds(value) {
+function validateRankingIds(value: unknown): string | null {
   if (!Array.isArray(value)) return "rankingIds must be an array";
   if (value.length > MAX_RANKING_LENGTH) return `rankingIds cannot contain more than ${MAX_RANKING_LENGTH} items`;
   if (!value.every((id) => typeof id === "string" && id.trim())) return "rankingIds must contain non-empty strings";
@@ -26,16 +32,16 @@ function validateRankingIds(value) {
   return null;
 }
 
-export function createRankingRouter(db) {
+export function createRankingRouter(db: Database.Database): Router {
   const router = Router();
 
-  const selectRanking = db.prepare(`
+  const selectRanking = db.prepare<[string, string], RankingRow>(`
     SELECT ranking_json, updated_at
     FROM rankings
     WHERE user_key_hash = ? AND contest_id = ?
   `);
 
-  const upsertRanking = db.prepare(`
+  const upsertRanking = db.prepare<[string, string, string, string, string]>(`
     INSERT INTO rankings (user_key_hash, contest_id, ranking_json, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?)
     ON CONFLICT(user_key_hash, contest_id)

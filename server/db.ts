@@ -4,11 +4,11 @@ import path from "node:path";
 
 const defaultDatabasePath = path.join(process.cwd(), "data", "eurovision-ranker.sqlite");
 
-export function getDatabasePath() {
+export function getDatabasePath(): string {
   return process.env.DATABASE_PATH || defaultDatabasePath;
 }
 
-export function openDatabase() {
+export function openDatabase(): Database.Database {
   const databasePath = getDatabasePath();
   fs.mkdirSync(path.dirname(databasePath), { recursive: true });
 

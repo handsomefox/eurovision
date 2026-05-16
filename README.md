@@ -33,7 +33,7 @@ npm run build
 NODE_ENV=production npm start
 ```
 
-The server listens on `process.env.PORT || 3000` and serves `dist` in production.
+The server listens on `process.env.PORT || 3000` and serves `dist` in production. The backend TypeScript compiles to `server-dist/`.
 
 ## Environment
 
@@ -43,14 +43,14 @@ The server listens on `process.env.PORT || 3000` and serves `dist` in production
 ./data/eurovision-ranker.sqlite
 ```
 
-For Railway, mount one volume at `/data` and set:
+For Fly.io, mount one volume at `/data` and set:
 
 ```sh
 DATABASE_PATH=/data/eurovision-ranker.sqlite
 NODE_ENV=production
 ```
 
-Keep Railway replicas at `1` while using SQLite on a mounted volume.
+Keep the app at one running machine while using SQLite on a mounted volume.
 
 ## Contest Data
 

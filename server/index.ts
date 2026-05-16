@@ -22,7 +22,7 @@ app.use("/api", createRankingRouter(db));
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(distDir));
-  app.use((req, res, next) => {
+  app.use((req, res, next): void => {
     if (req.method !== "GET" || req.path.startsWith("/api")) {
       next();
       return;

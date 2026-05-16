@@ -43,8 +43,8 @@ COPY --from=build /app /app
 # Setup sqlite3 on a separate volume
 RUN mkdir -p /data
 VOLUME /data
+ENV DATABASE_PATH="/data/eurovision-ranker.sqlite"
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-ENV DATABASE_URL="file:///data/sqlite.db"
 CMD [ "npm", "run", "start" ]
