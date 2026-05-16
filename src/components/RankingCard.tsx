@@ -1,0 +1,122 @@
+import { ArrowDown, ArrowUp, Copy, ExternalLink, Music2 } from "lucide-react";
+import type { FocusEvent } from "react";
+import { getTheme } from "../lib/themes";
+import { songWikiUrl, wikiUrl } from "../lib/wiki";
+import type { Entry, WikiImage } from "../types";
+import Photo from "./Photo";
+
+type RankingCardProps = {
+  item: Entry;
+  rank: number;
+  image?: WikiImage;
+  moveUp: () => void;
+  moveDown: () => void;
+  moveTo: (targetIndex: number) => void;
+  isFirst: boolean;
+  isLast: boolean;
+  total: number;
+  copyLink: (url: string) => void;
+};
+
+export default function RankingCard({ item, rank, image, moveUp, moveDown, moveTo, isFirst, isLast, total, copyLink }: RankingCardProps) {
+  const theme = getTheme(item);
+
+  function applyManualRank(event: FocusEvent<HTMLInputElement>) {
+    const rawValue = event.currentTarget.value.trim();
+    const parsedValue = Number.parseInt(rawValue, 10);
+
+    if (!Number.isFinite(parsedValue)) {
+      event.currentTarget.value = String(rank);
+      return;
+    }
+
+    const clampedValue = Math.min(Math.max(parsedValue, 1), total);
+    event.currentTarget.value = String(clampedValue);
+    moveTo(clampedValue - 1);
+  }
+
+  return (
+    <article
+      style={{ background: `${theme.bg}, rgba(2, 6, 23, 0.44)` }}
+      className={`group relative overflow-hidden rounded-3xl border shadow-2xl backdrop-blur-xl transition hover:border-white/25 ${
+        rank === 1
+          ? "border-amber-200/45 shadow-amber-300/10"
+          : rank === 2
+            ? "border-slate-100/35 shadow-slate-200/10"
+            : rank === 3
+              ? "border-orange-200/40 shadow-orange-300/10"
+              : "border-white/10 shadow-black/20"
+      }`}
+    >
+      <div className="pointer-events-none absolute inset-0 bg-slate-950/0" />
+      <div
+        className={`absolute inset-y-0 left-0 w-1 bg-gradient-to-b ${
+          rank === 1
+            ? "from-yellow-200 via-amber-300 to-yellow-600"
+            : rank === 2
+              ? "from-white via-slate-300 to-slate-500"
+              : rank === 3
+                ? "from-orange-200 via-orange-400 to-amber-700"
+                : theme.stripe
+        }`}
+      />
+
+      <div className="flex gap-3 p-3 sm:gap-4 sm:p-4">
+        <Photo item={item} image={image} rank={rank} total={total} onRankInput={applyManualRank} />
+
+        <div className="min-w-0 flex-1 py-1">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-bold text-white/75">
+              Running #{String(item.order).padStart(2, "0")}
+            </span>
+            <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-bold text-white/75 ring-1 ring-white/10">
+              {item.country}
+            </span>
+          </div>
+
+          <h2 className="truncate text-lg font-extrabold tracking-[-0.006em] text-white drop-shadow-sm sm:text-2xl">{item.artist}</h2>
+          <p className="mt-1 flex items-center gap-2 text-sm font-semibold text-white/78 sm:text-base">
+            <Music2 className="h-4 w-4 shrink-0" />
+            <span className="truncate">{item.song}</span>
+          </p>
+
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => copyLink(songWikiUrl(item))}
+              className="inline-flex items-center gap-1 rounded-full bg-cyan-300/10 px-2.5 py-1 text-xs font-semibold text-cyan-100 hover:bg-cyan-300/20"
+            >
+              <Copy className="h-3 w-3" /> Copy song wiki
+            </button>
+            <button
+              type="button"
+              onClick={() => copyLink(wikiUrl(item))}
+              className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white/70 hover:bg-white/15 hover:text-white"
+            >
+              <ExternalLink className="h-3 w-3" /> Copy source
+            </button>
+          </div>
+        </div>
+
+        <div className="flex shrink-0 flex-col justify-center gap-2">
+          <button
+            onClick={moveUp}
+            disabled={isFirst}
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30"
+            aria-label="Move up"
+          >
+            <ArrowUp className="h-4 w-4" />
+          </button>
+          <button
+            onClick={moveDown}
+            disabled={isLast}
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30"
+            aria-label="Move down"
+          >
+            <ArrowDown className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}

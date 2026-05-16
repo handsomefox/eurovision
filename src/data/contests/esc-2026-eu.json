@@ -1,0 +1,277 @@
+{
+  "id": "esc-2026-eu",
+  "year": 2026,
+  "family": "eurovision",
+  "region": "eu",
+  "label": "Eurovision 2026 · Europe",
+  "title": "Eurovision 2026 Grand Final Ranker",
+  "badge": "Vienna 2026",
+  "status": "complete",
+  "description": "Изначально рейтинг пустой. Жми плюс у участников, добавляй следующего по running order, потом двигай карточки стрелками или вводи место вручную.",
+  "sourceUrl": "https://eurovision.tv/",
+  "entries": [
+    {
+      "id": "denmark",
+      "order": 1,
+      "country": "Denmark",
+      "flag": "🇩🇰",
+      "code": "dk",
+      "artist": "Søren Torpegaard Lund",
+      "song": "Før Vi Går Hjem",
+      "wikiTitles": ["Søren Torpegaard Lund", "Før vi går hjem"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260508_corinne-cumming_ebu00110-croppedpng/260508_Corinne%20Cumming_EBU00110%20cropped-fill_size%3D2560x1600-focal_point%3D2371x1222-focal_size%3D941x1065.png"
+    },
+    {
+      "id": "germany",
+      "order": 2,
+      "country": "Germany",
+      "flag": "🇩🇪",
+      "code": "de",
+      "artist": "Sarah Engels",
+      "song": "Fire",
+      "wikiTitles": ["Sarah Engels"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260509_corinne-cumming_ebu00097_croppedpng/260509_Corinne%20Cumming_EBU00097_cropped-fill_size%3D2560x1600.png"
+    },
+    {
+      "id": "israel",
+      "order": 3,
+      "country": "Israel",
+      "flag": "🇮🇱",
+      "code": "il",
+      "artist": "Noam Bettan",
+      "song": "Michelle",
+      "wikiTitles": ["Noam Bettan"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260506_corinne-cumming_ebu00008croppedpng/260506_Corinne%20Cumming_EBU00008%3Acropped-fill_size%3D2560x1600-focal_point%3D3119x1006-focal_size%3D828x1325.png"
+    },
+    {
+      "id": "belgium",
+      "order": 4,
+      "country": "Belgium",
+      "flag": "🇧🇪",
+      "code": "be",
+      "artist": "ESSYLA",
+      "song": "Dancing on the Ice",
+      "wikiTitles": ["ESSYLA"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260507_corinne-cumming_ebu00040-croppedpng/260507_Corinne%20Cumming_EBU00040%20cropped-fill_size%3D2560x1600-focal_point%3D2481x936-focal_size%3D669x803.png"
+    },
+    {
+      "id": "albania",
+      "order": 5,
+      "country": "Albania",
+      "flag": "🇦🇱",
+      "code": "al",
+      "artist": "Alis Kallaçi",
+      "song": "Nân",
+      "wikiTitles": ["Alis Kallaçi", "Albania in the Eurovision Song Contest 2026"]
+    },
+    {
+      "id": "greece",
+      "order": 6,
+      "country": "Greece",
+      "flag": "🇬🇷",
+      "code": "gr",
+      "artist": "Akylas",
+      "song": "Ferto",
+      "wikiTitles": ["Akylas", "Greece in the Eurovision Song Contest 2026"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260506_corinne-cumming_ebu00008_croppedpng/260506_Corinne%20Cumming_EBU00008_cropped-fill_size%3D2560x1600-focal_point%3D2505x754-focal_size%3D866x826.png"
+    },
+    {
+      "id": "ukraine",
+      "order": 7,
+      "country": "Ukraine",
+      "flag": "🇺🇦",
+      "code": "ua",
+      "artist": "LELÉKA",
+      "song": "Ridnym",
+      "wikiTitles": ["LELÉKA", "Ukraine in the Eurovision Song Contest 2026"]
+    },
+    {
+      "id": "australia",
+      "order": 8,
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "code": "au",
+      "artist": "Delta Goodrem",
+      "song": "Eclipse",
+      "wikiTitles": ["Delta Goodrem"]
+    },
+    {
+      "id": "serbia",
+      "order": 9,
+      "country": "Serbia",
+      "flag": "🇷🇸",
+      "code": "rs",
+      "artist": "LAVINA",
+      "song": "Kraj Mene",
+      "wikiTitles": ["Lavina (band)", "Kraj mene", "Serbia in the Eurovision Song Contest 2026"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260507_corinne-cumming_ebu00062jpg/260507_Corinne%20Cumming_EBU00062-fill_size%3D2560x1600-focal_point%3D2507x3355-focal_size%3D901x942.jpg"
+    },
+    {
+      "id": "malta",
+      "order": 10,
+      "country": "Malta",
+      "flag": "🇲🇹",
+      "code": "mt",
+      "artist": "AIDAN",
+      "song": "Bella",
+      "wikiTitles": ["Aidan Cassar"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260509_corinne-cumming_ebu00036jpg/260509_Corinne%20Cumming_EBU00036-fill_size%3D2560x1600-focal_point%3D2614x1017-focal_size%3D437x519.jpg"
+    },
+    {
+      "id": "czechia",
+      "order": 11,
+      "country": "Czechia",
+      "flag": "🇨🇿",
+      "code": "cz",
+      "artist": "Daniel Zizka",
+      "song": "CROSSROADS",
+      "wikiTitles": ["Daniel Žižka", "Czechia in the Eurovision Song Contest 2026"]
+    },
+    {
+      "id": "bulgaria",
+      "order": 12,
+      "country": "Bulgaria",
+      "flag": "🇧🇬",
+      "code": "bg",
+      "artist": "DARA",
+      "song": "Bangaranga",
+      "wikiTitles": ["Dara (Bulgarian singer)"]
+    },
+    {
+      "id": "croatia",
+      "order": 13,
+      "country": "Croatia",
+      "flag": "🇭🇷",
+      "code": "hr",
+      "artist": "LELEK",
+      "song": "Andromeda",
+      "wikiTitles": ["Croatia in the Eurovision Song Contest 2026", "Croatia in the Eurovision Song Contest"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260506_corinne-cumming_ebu00170jpg/260506_Corinne%20Cumming_EBU00170-fill_size%3D2560x1600-focal_point%3D2732x2138-focal_size%3D942x1208.jpg"
+    },
+    {
+      "id": "united-kingdom",
+      "order": 14,
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "code": "gb",
+      "artist": "LOOK MUM NO COMPUTER",
+      "song": "Eins, Zwei, Drei",
+      "wikiTitles": ["Look Mum No Computer"]
+    },
+    {
+      "id": "france",
+      "order": 15,
+      "country": "France",
+      "flag": "🇫🇷",
+      "code": "fr",
+      "artist": "Monroe",
+      "song": "Regarde!",
+      "wikiTitles": ["France in the Eurovision Song Contest 2026"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260509_corinne-cumming_ebu00094_croppedpng/260509_Corinne%20Cumming_EBU00094_cropped-fill_size%3D2560x1600-focal_point%3D3302x1144-focal_size%3D1095x1350.png"
+    },
+    {
+      "id": "moldova",
+      "order": 16,
+      "country": "Moldova",
+      "flag": "🇲🇩",
+      "code": "md",
+      "artist": "Satoshi",
+      "song": "Viva, Moldova!",
+      "wikiTitles": ["Satoshi (Moldovan singer)", "Moldova in the Eurovision Song Contest 2026"],
+      "officialPhotoUrl": "https://www.esc-plus.com/wp-content/uploads/2026/01/Satoshi_Moldova_2026-1-scaled-850x530.jpg"
+    },
+    {
+      "id": "finland",
+      "order": 17,
+      "country": "Finland",
+      "flag": "🇫🇮",
+      "code": "fi",
+      "artist": "Linda Lampenius x Pete Parkkonen",
+      "song": "Liekinheitin",
+      "wikiTitles": ["Linda Lampenius", "Pete Parkkonen"]
+    },
+    {
+      "id": "poland",
+      "order": 18,
+      "country": "Poland",
+      "flag": "🇵🇱",
+      "code": "pl",
+      "artist": "ALICJA",
+      "song": "Pray",
+      "wikiTitles": ["Alicja Szemplińska"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260507_corinne-cumming_ebu00044jpg/260507_Corinne%20Cumming_EBU00044-fill_size%3D2560x1600-focal_point%3D3089x2391-focal_size%3D1320x1254.jpg"
+    },
+    {
+      "id": "lithuania",
+      "order": 19,
+      "country": "Lithuania",
+      "flag": "🇱🇹",
+      "code": "lt",
+      "artist": "Lion Ceccah",
+      "song": "Sólo Quiero Más",
+      "wikiTitles": ["Lion Ceccah", "Lithuania in the Eurovision Song Contest 2026"]
+    },
+    {
+      "id": "sweden",
+      "order": 20,
+      "country": "Sweden",
+      "flag": "🇸🇪",
+      "code": "se",
+      "artist": "FELICIA",
+      "song": "My System",
+      "wikiTitles": ["Sweden in the Eurovision Song Contest 2026"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260506_corinne-cumming_ebu00130jpg/260506_Corinne%20Cumming_EBU00130-fill_size%3D2560x1600-focal_point%3D2631x2507-focal_size%3D1247x1445.jpg"
+    },
+    {
+      "id": "cyprus",
+      "order": 21,
+      "country": "Cyprus",
+      "flag": "🇨🇾",
+      "code": "cy",
+      "artist": "Antigoni",
+      "song": "JALLA",
+      "wikiTitles": ["Antigoni Buxton"]
+    },
+    {
+      "id": "italy",
+      "order": 22,
+      "country": "Italy",
+      "flag": "🇮🇹",
+      "code": "it",
+      "artist": "Sal Da Vinci",
+      "song": "Per Sempre Sì",
+      "wikiTitles": ["Sal Da Vinci"]
+    },
+    {
+      "id": "norway",
+      "order": 23,
+      "country": "Norway",
+      "flag": "🇳🇴",
+      "code": "no",
+      "artist": "JONAS LOVV",
+      "song": "YA YA YA",
+      "wikiTitles": ["JONAS LOVV", "Norway in the Eurovision Song Contest 2026"],
+      "officialPhotoUrl": "https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260509_corinne-cumming_ebu00100jpg/260509_Corinne%20Cumming_EBU00100-fill_size%3D2560x1600-focal_point%3D2681x2529-focal_size%3D1249x1475.jpg"
+    },
+    {
+      "id": "romania",
+      "order": 24,
+      "country": "Romania",
+      "flag": "🇷🇴",
+      "code": "ro",
+      "artist": "Alexandra Căpitănescu",
+      "song": "Choke Me",
+      "wikiTitles": ["Alexandra Căpitănescu", "Romania in the Eurovision Song Contest 2026"]
+    },
+    {
+      "id": "austria",
+      "order": 25,
+      "country": "Austria",
+      "flag": "🇦🇹",
+      "code": "at",
+      "artist": "COSMÓ",
+      "song": "Tanzschein",
+      "wikiTitles": ["COSMÓ", "Austria in the Eurovision Song Contest 2026"]
+    }
+  ]
+}

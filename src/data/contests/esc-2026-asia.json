@@ -1,0 +1,24 @@
+{
+  "id": "esc-2026-asia",
+  "year": 2026,
+  "family": "eurovision",
+  "region": "asia",
+  "label": "Eurovision Asia 2026",
+  "title": "Eurovision Song Contest Asia 2026",
+  "badge": "Bangkok · 14 Nov 2026",
+  "status": "placeholder",
+  "description": "Артисты и песни будут добавляться по мере появления данных.",
+  "sourceUrl": "https://www.eurovision.com/asia/",
+  "entries": [
+    {
+      "id": "asia-2026-thailand",
+      "order": 1,
+      "country": "Thailand",
+      "flag": "🇹🇭",
+      "code": "th",
+      "artist": "TBA",
+      "song": "TBA",
+      "forceFlag": true
+    }
+  ]
+}
