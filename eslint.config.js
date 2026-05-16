@@ -12,7 +12,7 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["src/**/*.{ts,tsx}", "server/**/*.ts", "*.config.js"],
+    files: ["src/**/*.{ts,tsx}", "server/**/*.ts", "tests/**/*.ts", "*.config.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",

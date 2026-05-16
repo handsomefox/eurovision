@@ -13,6 +13,12 @@ export function openDatabase(): Database.Database {
   fs.mkdirSync(path.dirname(databasePath), { recursive: true });
 
   const db = new Database(databasePath);
+  initializeDatabase(db);
+
+  return db;
+}
+
+export function initializeDatabase(db: Database.Database): void {
   db.pragma("journal_mode = WAL");
   db.pragma("busy_timeout = 5000");
 
@@ -26,6 +32,4 @@ export function openDatabase(): Database.Database {
       PRIMARY KEY (user_key_hash, contest_id)
     );
   `);
-
-  return db;
 }

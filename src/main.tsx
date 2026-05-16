@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { registerSW } from "virtual:pwa-register";
 import App from "./App";
+import { registerServiceWorker } from "./lib/serviceWorker";
 import "./styles.css";
 
 const root = document.getElementById("root");
@@ -16,4 +16,4 @@ createRoot(root).render(
   </React.StrictMode>
 );
 
-registerSW({ immediate: true });
+registerServiceWorker();

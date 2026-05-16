@@ -22,6 +22,7 @@ type CachedWikiImage = ResolvedWikiImage & {
 const IMAGE_CACHE_PREFIX = "eurovision-ranker-image-v1";
 const FOUND_IMAGE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const MISSING_IMAGE_TTL_MS = 3 * 24 * 60 * 60 * 1000;
+const IMAGE_FETCH_CONCURRENCY = 4;
 
 function hashString(value: string): string {
   let hash = 0;
@@ -173,23 +174,28 @@ export function useWikiImages(items: Entry[]): Record<string, WikiImage> {
       const itemsToFetch = items.filter((item) => immediateImages[item.id]?.status === "loading");
       if (!itemsToFetch.length) return;
 
-      const entries = await Promise.all(
-        itemsToFetch.map(async (item) => {
-          try {
-            const image = await fetchWikiImage(item);
-            const resolved = { status: image ? "found" : "missing", src: image } satisfies ResolvedWikiImage;
-            writeCachedImage(item, resolved);
-            return [item.id, resolved] as const;
-          } catch {
-            const resolved = { status: "missing", src: null } satisfies ResolvedWikiImage;
-            writeCachedImage(item, resolved);
-            return [item.id, resolved] as const;
-          }
-        })
-      );
+      for (let index = 0; index < itemsToFetch.length; index += IMAGE_FETCH_CONCURRENCY) {
+        if (cancelled) return;
 
-      if (!cancelled) {
-        setImages((current) => ({ ...current, ...Object.fromEntries(entries) }));
+        const batch = itemsToFetch.slice(index, index + IMAGE_FETCH_CONCURRENCY);
+        const entries = await Promise.all(
+          batch.map(async (item) => {
+            try {
+              const image = await fetchWikiImage(item);
+              const resolved = { status: image ? "found" : "missing", src: image } satisfies ResolvedWikiImage;
+              writeCachedImage(item, resolved);
+              return [item.id, resolved] as const;
+            } catch {
+              const resolved = { status: "missing", src: null } satisfies ResolvedWikiImage;
+              writeCachedImage(item, resolved);
+              return [item.id, resolved] as const;
+            }
+          })
+        );
+
+        if (!cancelled) {
+          setImages((current) => ({ ...current, ...Object.fromEntries(entries) }));
+        }
       }
     }
 

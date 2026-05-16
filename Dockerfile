@@ -38,7 +38,11 @@ RUN npm prune --omit=dev
 FROM base
 
 # Copy built application
-COPY --from=build /app /app
+COPY --from=build /app/package-lock.json /app/package.json ./
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/server-dist ./server-dist
+COPY --from=build /app/src/data/contests ./src/data/contests
 
 # Setup sqlite3 on a separate volume
 RUN mkdir -p /data
