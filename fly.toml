@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for eurovision on 2026-05-16T21:36:42Z
+# fly.toml app configuration file generated for eurovision on 2026-05-16T22:10:37Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -9,8 +9,8 @@ primary_region = 'fra'
 [build]
 
 [env]
-  NODE_ENV = 'production'
   DATABASE_PATH = '/data/eurovision-ranker.sqlite'
+  NODE_ENV = 'production'
 
 [[mounts]]
   source = 'data'
@@ -20,19 +20,19 @@ primary_region = 'fra'
   auto_extend_size_limit = '10GB'
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
 
-[[http_service.checks]]
-  grace_period = '10s'
-  interval = '30s'
-  method = 'GET'
-  path = '/api/health'
-  timeout = '5s'
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '10s'
+    method = 'GET'
+    path = '/api/health'
 
 [[vm]]
   memory = '1gb'
