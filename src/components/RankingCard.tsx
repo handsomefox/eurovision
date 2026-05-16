@@ -60,7 +60,7 @@ export default function RankingCard({ item, rank, image, moveUp, moveDown, moveT
         }`}
       />
 
-      <div className="flex gap-3 p-3 sm:gap-4 sm:p-4">
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 p-3 sm:flex sm:gap-4 sm:p-4">
         <Photo item={item} image={image} rank={rank} total={total} onRankInput={applyManualRank} />
 
         <div className="min-w-0 flex-1 py-1">
@@ -99,11 +99,11 @@ export default function RankingCard({ item, rank, image, moveUp, moveDown, moveT
           </div>
         </div>
 
-        <div className="flex shrink-0 flex-col justify-center gap-2">
+        <div className="col-span-2 grid grid-cols-2 gap-2 sm:flex sm:shrink-0 sm:flex-col sm:justify-center">
           <button
             onClick={moveUp}
             disabled={isFirst}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30"
+            className="flex h-10 w-full items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30 sm:w-10"
             aria-label="Move up"
           >
             <ArrowUp className="h-4 w-4" />
@@ -111,7 +111,7 @@ export default function RankingCard({ item, rank, image, moveUp, moveDown, moveT
           <button
             onClick={moveDown}
             disabled={isLast}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30"
+            className="flex h-10 w-full items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30 sm:w-10"
             aria-label="Move down"
           >
             <ArrowDown className="h-4 w-4" />

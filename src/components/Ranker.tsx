@@ -189,25 +189,25 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
               : "ready";
 
   return (
-    <main className="min-h-screen overflow-hidden bg-slate-950 bg-[linear-gradient(135deg,#020617_0%,#111827_52%,#042f2e_100%)] text-white">
-      <section className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <header className="mb-5 rounded-[2rem] border border-white/10 bg-white/8 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-6">
+    <main className="min-h-[100dvh] overflow-x-hidden bg-slate-950 bg-[linear-gradient(135deg,#020617_0%,#111827_52%,#042f2e_100%)] text-white">
+      <section className="relative mx-auto max-w-7xl px-3 py-3 sm:px-6 sm:py-6 lg:px-8">
+        <header className="mb-4 rounded-3xl border border-white/10 bg-white/8 p-3 shadow-2xl shadow-black/20 backdrop-blur-xl sm:mb-5 sm:rounded-[2rem] sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-fuchsia-400/15 px-3 py-1.5 text-sm font-bold text-fuchsia-100 ring-1 ring-fuchsia-300/20">
+            <div className="min-w-0">
+              <div className="mb-3 inline-flex max-w-full items-center gap-2 rounded-full bg-fuchsia-400/15 px-3 py-1.5 text-sm font-bold text-fuchsia-100 ring-1 ring-fuchsia-300/20">
                 <Trophy className="h-4 w-4" />
-                {contest.title}
+                <span className="truncate">{contest.title}</span>
               </div>
-              <h1 className="text-3xl font-extrabold tracking-[-0.012em] sm:text-5xl">Собирай рейтинг по ходу шоу</h1>
+              <h1 className="text-2xl font-extrabold tracking-[-0.012em] sm:text-5xl">Собирай рейтинг по ходу шоу</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-white/70 sm:text-base">{contest.description}</p>
             </div>
 
-            <div className="rounded-3xl bg-black/25 p-4 ring-1 ring-white/10">
+            <div className="min-w-0 rounded-3xl bg-black/25 p-3 ring-1 ring-white/10 sm:p-4">
               <div className="text-xs font-bold uppercase tracking-widest text-white/45">Сейчас в рейтинге</div>
               <div className="mt-1 flex items-center gap-3">
-                <span className="text-3xl">{currentTop ? currentTop.flag : "🎤"}</span>
-                <div>
-                  <div className="font-black leading-tight">{currentTop ? currentTop.artist : "Пока пусто"}</div>
+                <span className="shrink-0 text-3xl">{currentTop ? currentTop.flag : "🎤"}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate font-black leading-tight">{currentTop ? currentTop.artist : "Пока пусто"}</div>
                   <div className="text-sm text-white/60">
                     {rankingIds.length}/{entries.length} добавлено · фото {foundPhotos}/{checkedPhotos || entries.length}
                   </div>
@@ -222,7 +222,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto]">
+          <div className="mt-4 grid gap-2 sm:mt-5 sm:gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto]">
             <ContestSelector contests={contests} activeContestId={activeContestId} onChange={onContestChange} />
             <div className="flex h-12 items-center justify-center rounded-2xl bg-black/25 px-4 text-sm font-bold text-white/65 ring-1 ring-white/10">
               {contest.badge} · {saveLabel}
@@ -254,8 +254,8 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
             </div>
           )}
 
-          <div className="mt-5 grid gap-3 md:grid-cols-[1fr_auto_auto_auto_auto]">
-            <label className="relative block">
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3 md:grid-cols-[1fr_auto_auto_auto_auto]">
+            <label className="relative col-span-2 block md:col-span-1">
               <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
               <input
                 value={query}
@@ -276,7 +276,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
             <button
               onClick={addNext}
               disabled={!nextByRunningOrder || loadStatus === "loading"}
-              className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-fuchsia-300 px-4 text-sm font-extrabold leading-none text-slate-950 transition hover:bg-fuchsia-200 disabled:cursor-not-allowed disabled:opacity-40"
+              className="col-span-2 flex h-12 items-center justify-center gap-2 rounded-2xl bg-fuchsia-300 px-4 text-sm font-extrabold leading-none text-slate-950 transition hover:bg-fuchsia-200 disabled:cursor-not-allowed disabled:opacity-40 md:col-span-1"
             >
               <SkipForward className="h-4 w-4 shrink-0" />
               <span className="translate-y-[0.5px]">Добавить следующего</span>
@@ -284,7 +284,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
 
             <button
               onClick={copyRanking}
-              className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-4 text-sm font-extrabold leading-none text-slate-950 transition hover:bg-cyan-200"
+              className="col-span-2 flex h-12 min-w-0 items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-3 text-sm font-extrabold leading-none text-slate-950 transition hover:bg-cyan-200 sm:px-4 md:col-span-1"
             >
               <Copy className="h-4 w-4 shrink-0" />
               <span className="translate-y-[0.5px]">{copied ? "Топ скопирован" : "Скопировать топ"}</span>
@@ -292,7 +292,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
 
             <button
               onClick={() => setIsImportOpen(true)}
-              className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-white/10 px-4 text-sm font-extrabold leading-none text-white ring-1 ring-white/10 transition hover:bg-white/15"
+              className="flex h-12 min-w-0 items-center justify-center gap-2 rounded-2xl bg-white/10 px-3 text-sm font-extrabold leading-none text-white ring-1 ring-white/10 transition hover:bg-white/15 sm:px-4"
             >
               <Upload className="h-4 w-4 shrink-0" />
               <span className="translate-y-[0.5px]">Импорт</span>
@@ -355,7 +355,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
               <span className="text-sm font-bold text-white/45">{availableItems.length} осталось</span>
             </div>
 
-            <div className="max-h-[72vh] space-y-3 overflow-y-auto pr-1">
+            <div className="space-y-3 lg:max-h-[72vh] lg:overflow-y-auto lg:pr-1">
               {availableItems.map((item) => (
                 <AddCard key={item.id} item={item} image={images[item.id]} add={() => add(item.id)} />
               ))}
@@ -369,8 +369,8 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
         </div>
 
         {isImportOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 px-4 py-6 backdrop-blur-sm">
-            <section className="w-full max-w-2xl rounded-[2rem] border border-white/10 bg-slate-950 p-4 shadow-2xl shadow-black/40 sm:p-5">
+          <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/75 px-2 py-2 backdrop-blur-sm sm:items-center sm:px-4 sm:py-6">
+            <section className="max-h-[calc(100dvh-1rem)] w-full max-w-2xl overflow-y-auto rounded-t-[2rem] border border-white/10 bg-slate-950 p-4 shadow-2xl shadow-black/40 sm:rounded-[2rem] sm:p-5">
               <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
                   <h2 className="text-xl font-extrabold tracking-[-0.006em]">Импорт рейтинга</h2>
@@ -389,7 +389,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
               <textarea
                 value={importText}
                 onChange={(event) => setImportText(event.target.value)}
-                className="min-h-72 w-full resize-y rounded-2xl border border-white/10 bg-black/30 p-3 text-sm font-semibold leading-6 text-white outline-none placeholder:text-white/35 focus:border-cyan-200/60"
+                className="h-[42dvh] min-h-56 w-full resize-y rounded-2xl border border-white/10 bg-black/30 p-3 text-sm font-semibold leading-6 text-white outline-none placeholder:text-white/35 focus:border-cyan-200/60 sm:min-h-72"
                 placeholder="1. 🇩🇰 Denmark: Søren Torpegaard Lund - Før Vi Går Hjem"
               />
 
@@ -405,7 +405,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                 )}
               </div>
 
-              <div className="mt-4 flex flex-wrap justify-end gap-2">
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setIsImportOpen(false)}
