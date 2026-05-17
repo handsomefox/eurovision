@@ -7,12 +7,9 @@
   "title": "Eurovision 2021 Grand Final Ranker",
   "badge": "Rotterdam 2021",
   "status": "complete",
-  "description": "Исторический финал: собирай личный рейтинг и сравнивай его с официальным результатом.",
+  "description": "Historical final: build a personal ranking and compare it with the official result.",
   "sourceUrl": "https://en.wikipedia.org/wiki/Eurovision_Song_Contest_2021#Final_2",
   "i18n": {
-    "en": {
-      "description": "Historical final: build a personal ranking and compare it with the official result."
-    },
     "ru": {
       "label": "Евровидение 2021 · Европа",
       "title": "Рейтинг финала Евровидения 2021",

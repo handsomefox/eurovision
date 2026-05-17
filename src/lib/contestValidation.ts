@@ -1,5 +1,8 @@
 import type { Contest, Entry } from "../types";
 
+const supportedTranslationLocales = ["ru"] as const;
+const localizedMetadataFields = ["label", "title", "badge", "description"] as const;
+
 function assertString(value: unknown, label: string): asserts value is string {
   if (typeof value !== "string" || !value.trim()) {
     throw new Error(`${label} must be a non-empty string`);
@@ -38,7 +41,13 @@ function validateLocalizedMetadata(value: unknown, label: string): void {
   }
 
   const metadata = value as Record<string, unknown>;
-  for (const locale of ["en", "ru"]) {
+  for (const locale of Object.keys(metadata)) {
+    if (!supportedTranslationLocales.includes(locale as (typeof supportedTranslationLocales)[number])) {
+      throw new Error(`${label}.${locale} is not a supported translation locale`);
+    }
+  }
+
+  for (const locale of supportedTranslationLocales) {
     const localized = metadata[locale];
     if (localized === undefined) continue;
     if (!localized || typeof localized !== "object") {
@@ -46,7 +55,7 @@ function validateLocalizedMetadata(value: unknown, label: string): void {
     }
 
     const fields = localized as Record<string, unknown>;
-    for (const field of ["label", "title", "badge", "description"]) {
+    for (const field of localizedMetadataFields) {
       assertOptionalString(fields[field], `${label}.${locale}.${field}`);
     }
   }

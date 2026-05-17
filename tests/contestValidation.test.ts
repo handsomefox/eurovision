@@ -68,4 +68,17 @@ describe("contest validation", () => {
       })
     ).toThrow("lowercase ISO country code");
   });
+
+  it("rejects default-locale contest metadata overrides", () => {
+    expect(() =>
+      validateContest({
+        ...validContest,
+        i18n: {
+          en: {
+            description: "English should live at the top level"
+          }
+        }
+      })
+    ).toThrow("esc-test.i18n.en is not a supported translation locale");
+  });
 });

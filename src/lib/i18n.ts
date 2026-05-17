@@ -232,6 +232,8 @@ export function t(locale: Locale, key: TranslationKey): string {
 }
 
 export function getLocalizedContest(contest: Contest, locale: Locale): Contest {
+  if (locale === "en") return contest;
+
   const localized = contest.i18n?.[locale] ?? {};
   return { ...contest, ...localized };
 }

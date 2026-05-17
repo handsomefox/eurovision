@@ -7,12 +7,9 @@
   "title": "Eurovision 2026 Grand Final Ranker",
   "badge": "Vienna 2026",
   "status": "complete",
-  "description": "Изначально рейтинг пустой. Жми плюс у участников, добавляй следующего по running order, потом двигай карточки стрелками или вводи место вручную.",
+  "description": "Start with an empty ranking. Add entries, follow the running order, then move cards with arrows or type a rank manually.",
   "sourceUrl": "https://www.eurovision.com/eurovision-song-contest/vienna-2026/vienna-2026-grand-final/",
   "i18n": {
-    "en": {
-      "description": "Start with an empty ranking. Add entries, follow the running order, then move cards with arrows or type a rank manually."
-    },
     "ru": {
       "label": "Евровидение 2026 · Европа",
       "title": "Рейтинг финала Евровидения 2026",

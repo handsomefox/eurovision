@@ -19,6 +19,7 @@ export type Entry = {
 export type Locale = "en" | "ru";
 
 export type ContestLocalizedMetadata = Partial<Pick<Contest, "label" | "title" | "badge" | "description">>;
+export type ContestTranslationLocale = Exclude<Locale, "en">;
 
 export type Contest = {
   id: string;
@@ -31,7 +32,7 @@ export type Contest = {
   status: "complete" | "placeholder";
   description: string;
   sourceUrl: string;
-  i18n?: Partial<Record<Locale, ContestLocalizedMetadata>>;
+  i18n?: Partial<Record<ContestTranslationLocale, ContestLocalizedMetadata>>;
   entries: Entry[];
 };
 

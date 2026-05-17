@@ -7,12 +7,9 @@
   "title": "Eurovision 2022 Grand Final Ranker",
   "badge": "Turin 2022",
   "status": "complete",
-  "description": "Исторический финал: собирай личный рейтинг и сравнивай его с официальным результатом.",
+  "description": "Historical final: build a personal ranking and compare it with the official result.",
   "sourceUrl": "https://en.wikipedia.org/wiki/Eurovision_Song_Contest_2022#Final_2",
   "i18n": {
-    "en": {
-      "description": "Historical final: build a personal ranking and compare it with the official result."
-    },
     "ru": {
       "label": "Евровидение 2022 · Европа",
       "title": "Рейтинг финала Евровидения 2022",

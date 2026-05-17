@@ -7,12 +7,9 @@
   "title": "Eurovision Song Contest Asia 2026",
   "badge": "Bangkok · 14 Nov 2026",
   "status": "placeholder",
-  "description": "Артисты и песни будут добавляться по мере появления данных.",
+  "description": "Artists and songs will be added as data appears.",
   "sourceUrl": "https://www.eurovision.com/asia/",
   "i18n": {
-    "en": {
-      "description": "Artists and songs will be added as data appears."
-    },
     "ru": {
       "label": "Евровидение Азия 2026",
       "title": "Eurovision Song Contest Asia 2026",
