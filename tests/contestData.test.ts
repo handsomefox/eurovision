@@ -6,7 +6,8 @@ const expectedHistoricalCounts = new Map([
   ["esc-2022-eu", 25],
   ["esc-2023-eu", 26],
   ["esc-2024-eu", 25],
-  ["esc-2025-eu", 26]
+  ["esc-2025-eu", 26],
+  ["esc-2026-eu", 25]
 ]);
 
 describe("contest data", () => {
