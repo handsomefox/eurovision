@@ -47,7 +47,7 @@ export default function RankingCard({
         : comparison?.status === "same"
           ? "bg-cyan-300/15 text-cyan-100 ring-cyan-200/20"
           : "bg-white/10 text-white/70 ring-white/10";
-  const comparisonText = comparison ? formatComparison(comparison, locale) : null;
+  const comparisonText = mode === "personal" && comparison ? formatComparison(comparison, locale) : null;
 
   function applyManualRank(event: FocusEvent<HTMLInputElement>) {
     if (!moveTo) return;
@@ -100,7 +100,7 @@ export default function RankingCard({
             </span>
             {item.resultRank !== undefined && item.resultPoints !== undefined && (
               <span className="rounded-full bg-amber-300/15 px-2.5 py-1 text-xs font-bold text-amber-100 ring-1 ring-amber-200/20">
-                {t(locale, "label.official")} #{item.resultRank} · {item.resultPoints} {t(locale, "label.points")}
+                #{item.resultRank} - {item.resultPoints} pts
               </span>
             )}
             {comparisonText && (
