@@ -31,6 +31,27 @@ function assertOptionalStringArray(value: unknown, label: string): asserts value
   }
 }
 
+function validateLocalizedMetadata(value: unknown, label: string): void {
+  if (value === undefined) return;
+  if (!value || typeof value !== "object") {
+    throw new Error(`${label} must be an object`);
+  }
+
+  const metadata = value as Record<string, unknown>;
+  for (const locale of ["en", "ru"]) {
+    const localized = metadata[locale];
+    if (localized === undefined) continue;
+    if (!localized || typeof localized !== "object") {
+      throw new Error(`${label}.${locale} must be an object`);
+    }
+
+    const fields = localized as Record<string, unknown>;
+    for (const field of ["label", "title", "badge", "description"]) {
+      assertOptionalString(fields[field], `${label}.${locale}.${field}`);
+    }
+  }
+}
+
 function assertOptionalResult(value: unknown, label: string): asserts value is number | undefined {
   if (value !== undefined && (typeof value !== "number" || !Number.isInteger(value) || value < 0)) {
     throw new Error(`${label} must be a non-negative integer`);
@@ -43,9 +64,10 @@ function validateEntry(rawEntry: unknown, contestId: string): Entry {
   }
 
   const entry = rawEntry as Partial<Entry>;
-  for (const field of ["id", "country", "flag", "code", "artist", "song"] as const) {
+  for (const field of ["id", "country", "code", "artist", "song"] as const) {
     assertString(entry[field], `${contestId}.${field}`);
   }
+  assertOptionalString(entry.flag, `${contestId}.${entry.id}.flag`);
   assertNumber(entry.order, `${contestId}.${entry.id}.order`);
   assertOptionalStringArray(entry.wikiTitles, `${contestId}.${entry.id}.wikiTitles`);
   assertOptionalString(entry.songWikiTitle, `${contestId}.${entry.id}.songWikiTitle`);
@@ -58,6 +80,9 @@ function validateEntry(rawEntry: unknown, contestId: string): Entry {
 
   if ((entry.resultRank === undefined) !== (entry.resultPoints === undefined)) {
     throw new Error(`${contestId}.${entry.id} must include both resultRank and resultPoints`);
+  }
+  if (!/^[a-z]{2}$/.test(entry.code!)) {
+    throw new Error(`${contestId}.${entry.id}.code must be a lowercase ISO country code`);
   }
 
   return entry as Entry;
@@ -78,6 +103,7 @@ export function validateContest(rawContest: unknown): Contest {
   assertString(contest.badge, `${contest.id}.badge`);
   assertString(contest.description, `${contest.id}.description`);
   assertString(contest.sourceUrl, `${contest.id}.sourceUrl`);
+  validateLocalizedMetadata(contest.i18n, `${contest.id}.i18n`);
   if (contest.status !== "complete" && contest.status !== "placeholder") {
     throw new Error(`${contest.id}.status must be complete or placeholder`);
   }

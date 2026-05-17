@@ -1,16 +1,19 @@
 import { ExternalLink, Plus } from "lucide-react";
+import { t } from "../lib/i18n";
 import { getTheme } from "../lib/themes";
 import { songWikiUrl } from "../lib/wiki";
-import type { Entry, WikiImage } from "../types";
+import type { Entry, Locale, WikiImage } from "../types";
+import Flag from "./Flag";
 import Photo from "./Photo";
 
 type AddCardProps = {
   item: Entry;
   image?: WikiImage;
+  locale: Locale;
   add: () => void;
 };
 
-export default function AddCard({ item, image, add }: AddCardProps) {
+export default function AddCard({ item, image, locale, add }: AddCardProps) {
   const theme = getTheme(item);
 
   return (
@@ -21,7 +24,7 @@ export default function AddCard({ item, image, add }: AddCardProps) {
       <div className="pointer-events-none absolute inset-0 bg-slate-950/0" />
       <div className={`absolute inset-y-0 left-0 w-1 bg-gradient-to-b ${theme.stripe}`} />
       <div className="flex items-center gap-3">
-        <Photo item={item} image={image} compact hideFlagOverlay />
+        <Photo item={item} image={image} locale={locale} compact hideFlagOverlay />
 
         <div className="min-w-0 flex-1 py-0.5">
           <h3 className="truncate text-base font-extrabold tracking-[-0.004em] text-white drop-shadow-sm">{item.artist}</h3>
@@ -32,7 +35,7 @@ export default function AddCard({ item, image, add }: AddCardProps) {
               #{String(item.order).padStart(2, "0")}
             </span>
             <span className="inline-flex h-6 items-center rounded-full bg-white/10 px-2 ring-1 ring-white/10" title={item.country}>
-              <img src={`https://flagcdn.com/w40/${item.code}.png`} alt={item.country} className="h-3.5 w-5 rounded-[2px] object-cover" />
+              <Flag item={item} size="sm" />
             </span>
             <a
               href={songWikiUrl(item)}
@@ -48,7 +51,7 @@ export default function AddCard({ item, image, add }: AddCardProps) {
         <button
           onClick={add}
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-cyan-300 text-slate-950 transition hover:bg-cyan-200"
-          aria-label={`Add ${item.country}`}
+          aria-label={`${t(locale, "actions.add")} ${item.country}`}
         >
           <Plus className="h-5 w-5" />
         </button>

@@ -9,6 +9,17 @@
   "status": "complete",
   "description": "Исторический финал: собирай личный рейтинг и сравнивай его с официальным результатом.",
   "sourceUrl": "https://en.wikipedia.org/wiki/Eurovision_Song_Contest_2022#Final_2",
+  "i18n": {
+    "en": {
+      "description": "Historical final: build a personal ranking and compare it with the official result."
+    },
+    "ru": {
+      "label": "Евровидение 2022 · Европа",
+      "title": "Рейтинг финала Евровидения 2022",
+      "badge": "Турин 2022",
+      "description": "Исторический финал: собирай личный рейтинг и сравнивай его с официальным результатом."
+    }
+  },
   "entries": [
     { "id": "czech-republic", "order": 1, "country": "Czech Republic", "flag": "🇨🇿", "code": "cz", "artist": "We Are Domi", "song": "Lights Off", "resultRank": 22, "resultPoints": 38 },
     { "id": "romania", "order": 2, "country": "Romania", "flag": "🇷🇴", "code": "ro", "artist": "Wrs", "song": "Llámame", "resultRank": 18, "resultPoints": 65 },

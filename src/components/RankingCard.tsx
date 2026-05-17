@@ -1,26 +1,56 @@
 import { ArrowDown, ArrowUp, ExternalLink, Music2 } from "lucide-react";
 import type { FocusEvent } from "react";
+import { t } from "../lib/i18n";
+import type { RankComparison } from "../lib/rankingHelpers";
 import { getTheme } from "../lib/themes";
 import { songWikiUrl, wikiUrl } from "../lib/wiki";
-import type { Entry, WikiImage } from "../types";
+import type { Entry, Locale, WikiImage } from "../types";
+import Flag from "./Flag";
 import Photo from "./Photo";
 
 type RankingCardProps = {
   item: Entry;
   rank: number;
   image?: WikiImage;
-  moveUp: () => void;
-  moveDown: () => void;
-  moveTo: (targetIndex: number) => void;
-  isFirst: boolean;
-  isLast: boolean;
+  locale: Locale;
+  comparison?: RankComparison;
+  mode?: "personal" | "official";
+  moveUp?: () => void;
+  moveDown?: () => void;
+  moveTo?: (targetIndex: number) => void;
+  isFirst?: boolean;
+  isLast?: boolean;
   total: number;
 };
 
-export default function RankingCard({ item, rank, image, moveUp, moveDown, moveTo, isFirst, isLast, total }: RankingCardProps) {
+export default function RankingCard({
+  item,
+  rank,
+  image,
+  locale,
+  comparison,
+  mode = "personal",
+  moveUp,
+  moveDown,
+  moveTo,
+  isFirst = false,
+  isLast = false,
+  total
+}: RankingCardProps) {
   const theme = getTheme(item);
+  const isEditable = mode === "personal" && Boolean(moveUp && moveDown && moveTo);
+  const comparisonTone =
+    comparison?.status === "better"
+      ? "bg-emerald-300/15 text-emerald-100 ring-emerald-200/20"
+      : comparison?.status === "worse"
+        ? "bg-rose-300/15 text-rose-100 ring-rose-200/20"
+        : comparison?.status === "same"
+          ? "bg-cyan-300/15 text-cyan-100 ring-cyan-200/20"
+          : "bg-white/10 text-white/70 ring-white/10";
+  const comparisonText = comparison ? formatComparison(comparison, locale) : null;
 
   function applyManualRank(event: FocusEvent<HTMLInputElement>) {
+    if (!moveTo) return;
     const rawValue = event.currentTarget.value.trim();
     const parsedValue = Number.parseInt(rawValue, 10);
 
@@ -61,19 +91,23 @@ export default function RankingCard({ item, rank, image, moveUp, moveDown, moveT
       />
 
       <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 p-3 sm:flex sm:gap-4 sm:p-4">
-        <Photo item={item} image={image} rank={rank} total={total} onRankInput={applyManualRank} />
+        <Photo item={item} image={image} locale={locale} rank={rank} total={total} onRankInput={isEditable ? applyManualRank : undefined} />
 
         <div className="min-w-0 flex-1 py-1">
           <div className="mb-2 flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-bold text-white/75">
-              Running #{String(item.order).padStart(2, "0")}
+              {t(locale, "label.running")} #{String(item.order).padStart(2, "0")}
             </span>
             {item.resultRank !== undefined && item.resultPoints !== undefined && (
               <span className="rounded-full bg-amber-300/15 px-2.5 py-1 text-xs font-bold text-amber-100 ring-1 ring-amber-200/20">
-                Official #{item.resultRank} · {item.resultPoints} pts
+                {t(locale, "label.official")} #{item.resultRank} · {item.resultPoints} {t(locale, "label.points")}
               </span>
             )}
-            <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-bold text-white/75 ring-1 ring-white/10">
+            {comparisonText && (
+              <span className={`rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${comparisonTone}`}>{comparisonText}</span>
+            )}
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-2.5 py-1 text-xs font-bold text-white/75 ring-1 ring-white/10">
+              <Flag item={item} size="sm" />
               {item.country}
             </span>
           </div>
@@ -91,7 +125,7 @@ export default function RankingCard({ item, rank, image, moveUp, moveDown, moveT
               rel="noreferrer"
               className="inline-flex items-center gap-1 rounded-full bg-cyan-300/10 px-2.5 py-1 text-xs font-semibold text-cyan-100 hover:bg-cyan-300/20"
             >
-              <ExternalLink className="h-3 w-3" /> Open song wiki
+              <ExternalLink className="h-3 w-3" /> {t(locale, "actions.openSongWiki")}
             </a>
             <a
               href={wikiUrl(item)}
@@ -99,30 +133,41 @@ export default function RankingCard({ item, rank, image, moveUp, moveDown, moveT
               rel="noreferrer"
               className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white/70 hover:bg-white/15 hover:text-white"
             >
-              <ExternalLink className="h-3 w-3" /> Open artist wiki
+              <ExternalLink className="h-3 w-3" /> {t(locale, "actions.openArtistWiki")}
             </a>
           </div>
         </div>
 
-        <div className="col-span-2 grid grid-cols-2 gap-2 sm:flex sm:shrink-0 sm:flex-col sm:justify-center">
-          <button
-            onClick={moveUp}
-            disabled={isFirst}
-            className="flex h-10 w-full items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30 sm:w-10"
-            aria-label="Move up"
-          >
-            <ArrowUp className="h-4 w-4" />
-          </button>
-          <button
-            onClick={moveDown}
-            disabled={isLast}
-            className="flex h-10 w-full items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30 sm:w-10"
-            aria-label="Move down"
-          >
-            <ArrowDown className="h-4 w-4" />
-          </button>
-        </div>
+        {isEditable && (
+          <div className="col-span-2 grid grid-cols-2 gap-2 sm:flex sm:shrink-0 sm:flex-col sm:justify-center">
+            <button
+              onClick={moveUp}
+              disabled={isFirst}
+              className="flex h-10 w-full items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30 sm:w-10"
+              aria-label="Move up"
+            >
+              <ArrowUp className="h-4 w-4" />
+            </button>
+            <button
+              onClick={moveDown}
+              disabled={isLast}
+              className="flex h-10 w-full items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30 sm:w-10"
+              aria-label="Move down"
+            >
+              <ArrowDown className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
     </article>
   );
+}
+
+function formatComparison(comparison: RankComparison, locale: Locale): string {
+  if (comparison.status === "missing-official") return "";
+  if (comparison.status === "unranked") return t(locale, "comparison.unranked");
+  if (comparison.status === "same") return `${t(locale, "comparison.same")} (#${comparison.officialRank})`;
+
+  const amount = Math.abs(comparison.delta);
+  return `${amount} ${comparison.status === "better" ? t(locale, "comparison.better") : t(locale, "comparison.worse")}`;
 }

@@ -1,15 +1,18 @@
 import type { Contest } from "../types";
+import { t } from "../lib/i18n";
+import type { Locale } from "../types";
 
 type ContestSelectorProps = {
   contests: Contest[];
   activeContestId: string;
+  locale: Locale;
   onChange: (contestId: string) => void;
 };
 
-export default function ContestSelector({ contests, activeContestId, onChange }: ContestSelectorProps) {
+export default function ContestSelector({ contests, activeContestId, locale, onChange }: ContestSelectorProps) {
   return (
     <label className="block">
-      <span className="sr-only">Choose competition</span>
+      <span className="sr-only">{t(locale, "contest.choose")}</span>
       <select
         value={activeContestId}
         onChange={(event) => onChange(event.target.value)}

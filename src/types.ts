@@ -2,7 +2,7 @@ export type Entry = {
   id: string;
   order: number;
   country: string;
-  flag: string;
+  flag?: string;
   code: string;
   artist: string;
   song: string;
@@ -16,6 +16,10 @@ export type Entry = {
   resultPoints?: number;
 };
 
+export type Locale = "en" | "ru";
+
+export type ContestLocalizedMetadata = Partial<Pick<Contest, "label" | "title" | "badge" | "description">>;
+
 export type Contest = {
   id: string;
   year: number;
@@ -27,6 +31,7 @@ export type Contest = {
   status: "complete" | "placeholder";
   description: string;
   sourceUrl: string;
+  i18n?: Partial<Record<Locale, ContestLocalizedMetadata>>;
   entries: Entry[];
 };
 

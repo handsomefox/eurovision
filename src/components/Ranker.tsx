@@ -2,26 +2,46 @@ import { Copy, RotateCcw, Search, SkipForward, Trophy, Upload, X } from "lucide-
 import { useEffect, useMemo, useState } from "react";
 import { copyToClipboard } from "../lib/clipboard";
 import { parseRankingImport } from "../lib/importRanking";
-import { filterAvailableEntries, moveItem, sortByOfficialResult } from "../lib/rankingHelpers";
+import { t } from "../lib/i18n";
+import {
+  filterAvailableEntries,
+  formatRankingForClipboard,
+  getRankComparison,
+  moveItem,
+  sortByOfficialResult
+} from "../lib/rankingHelpers";
 import { useSavedRanking } from "../lib/useSavedRanking";
 import { useWikiImages } from "../lib/wiki";
-import type { Contest, Entry } from "../types";
+import type { Contest, Entry, Locale } from "../types";
 import AddCard from "./AddCard";
 import ContestSelector from "./ContestSelector";
+import Flag from "./Flag";
+import LocaleSwitcher from "./LocaleSwitcher";
 import RankingCard from "./RankingCard";
 
-type ViewMode = "ranking" | "results";
+type ViewMode = "compare" | "ranking" | "results";
 
 type RankerProps = {
   contest: Contest;
   contests: Contest[];
   activeContestId: string;
+  locale: Locale;
   userKey: string;
   onContestChange: (contestId: string) => void;
+  onLocaleChange: (locale: Locale) => void;
   onForgetKey: () => void;
 };
 
-export default function Ranker({ contest, contests, activeContestId, userKey, onContestChange, onForgetKey }: RankerProps) {
+export default function Ranker({
+  contest,
+  contests,
+  activeContestId,
+  locale,
+  userKey,
+  onContestChange,
+  onLocaleChange,
+  onForgetKey
+}: RankerProps) {
   const [query, setQuery] = useState("");
   const [copied, setCopied] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
@@ -33,14 +53,15 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
   const images = useWikiImages(entries);
   const { rankingIds, setRankingIds, loadStatus, saveStatus } = useSavedRanking({ byId, contestId: contest.id, userKey });
   const hasOfficialResults = entries.every((entry) => entry.resultRank !== undefined && entry.resultPoints !== undefined);
+  const isEditableMode = viewMode !== "results";
 
   useEffect(() => {
     setQuery("");
     setCopied(false);
     setIsImportOpen(false);
     setImportText("");
-    setViewMode("ranking");
-  }, [contest.id]);
+    setViewMode(hasOfficialResults ? "compare" : "ranking");
+  }, [contest.id, hasOfficialResults]);
 
   const rankedItems = useMemo(
     () => rankingIds.map((id) => byId.get(id)).filter((item): item is Entry => Boolean(item)),
@@ -48,6 +69,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
   );
   const rankedIdSet = useMemo(() => new Set(rankingIds), [rankingIds]);
   const resultItems = useMemo(() => sortByOfficialResult(entries), [entries]);
+  const personalIndexById = useMemo(() => new Map(rankingIds.map((id, index) => [id, index])), [rankingIds]);
 
   const availableItems = useMemo(() => {
     return filterAvailableEntries(entries, rankedIdSet, query);
@@ -78,7 +100,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
   }
 
   function reset() {
-    if (rankingIds.length && !window.confirm("Очистить весь рейтинг?")) return;
+    if (rankingIds.length && !window.confirm(t(locale, "confirm.clear"))) return;
     setRankingIds([]);
     setQuery("");
     setCopied(false);
@@ -93,10 +115,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
   }
 
   async function copyRanking() {
-    const lines = rankedItems.map((item, index) => `${index + 1}. ${item.flag} ${item.country}: ${item.artist} - ${item.song}`);
-    const text = lines.length ? lines.join(String.fromCharCode(10)) : "Пока никого нет в рейтинге.";
-
-    await copyToClipboard(text);
+    await copyToClipboard(formatRankingForClipboard(rankedItems, locale));
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1600);
   }
@@ -106,16 +125,16 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
   const progressPercent = entries.length ? Math.round((rankingIds.length / entries.length) * 100) : 0;
   const saveLabel =
     loadStatus === "loading"
-      ? "loading"
+      ? t(locale, "save.loading")
       : loadStatus === "error"
-        ? "load error"
+        ? t(locale, "save.loadError")
         : saveStatus === "saving"
-          ? "saving"
+          ? t(locale, "save.saving")
           : saveStatus === "error"
-            ? "save error"
+            ? t(locale, "save.saveError")
             : saveStatus === "saved"
-              ? "saved"
-              : "ready";
+              ? t(locale, "save.saved")
+              : t(locale, "save.ready");
 
   return (
     <main className="min-h-[100dvh] overflow-x-hidden bg-slate-950 bg-[linear-gradient(135deg,#020617_0%,#111827_52%,#042f2e_100%)] text-white">
@@ -127,18 +146,21 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                 <Trophy className="h-4 w-4" />
                 <span className="truncate">{contest.title}</span>
               </div>
-              <h1 className="text-2xl font-extrabold tracking-[-0.012em] sm:text-5xl">Собирай рейтинг по ходу шоу</h1>
+              <h1 className="text-2xl font-extrabold tracking-[-0.012em] sm:text-5xl">{t(locale, "header.headline")}</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-white/70 sm:text-base">{contest.description}</p>
             </div>
 
             <div className="min-w-0 rounded-3xl bg-black/25 p-3 ring-1 ring-white/10 sm:p-4">
-              <div className="text-xs font-bold uppercase tracking-widest text-white/45">Сейчас в рейтинге</div>
+              <div className="text-xs font-bold uppercase tracking-widest text-white/45">{t(locale, "summary.heading")}</div>
               <div className="mt-1 flex items-center gap-3">
-                <span className="shrink-0 text-3xl">{currentTop ? currentTop.flag : "🎤"}</span>
+                <span className="flex h-10 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10">
+                  {currentTop ? <Flag item={currentTop} size="md" /> : <Trophy className="h-5 w-5 text-white/55" />}
+                </span>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate font-black leading-tight">{currentTop ? currentTop.artist : "Пока пусто"}</div>
+                  <div className="truncate font-black leading-tight">{currentTop ? currentTop.artist : t(locale, "summary.empty")}</div>
                   <div className="text-sm text-white/60">
-                    {rankingIds.length}/{entries.length} добавлено · фото {foundPhotos}/{checkedPhotos || entries.length}
+                    {rankingIds.length}/{entries.length} {t(locale, "progress.added")} · {t(locale, "progress.photos")} {foundPhotos}/
+                    {checkedPhotos || entries.length}
                   </div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
                     <div
@@ -151,27 +173,37 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
             </div>
           </div>
 
-          <div className="mt-4 grid gap-2 sm:mt-5 sm:gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto]">
-            <ContestSelector contests={contests} activeContestId={activeContestId} onChange={onContestChange} />
+          <div className="mt-4 grid gap-2 sm:mt-5 sm:gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto_auto]">
+            <ContestSelector contests={contests} activeContestId={activeContestId} locale={locale} onChange={onContestChange} />
             <div className="flex h-12 items-center justify-center rounded-2xl bg-black/25 px-4 text-sm font-bold text-white/65 ring-1 ring-white/10">
               {contest.badge} · {saveLabel}
             </div>
+            <LocaleSwitcher locale={locale} onChange={onLocaleChange} />
             <button
               onClick={onForgetKey}
               className="h-12 rounded-2xl bg-white/10 px-4 text-sm font-extrabold text-white ring-1 ring-white/10 transition hover:bg-white/15"
             >
-              Change key
+              {t(locale, "actions.changeKey")}
             </button>
           </div>
 
           {contest.status === "placeholder" && (
             <div className="mt-5 rounded-2xl border border-amber-200/25 bg-amber-300/10 px-4 py-3 text-sm font-semibold leading-6 text-amber-50">
-              Это placeholder-конкурс: данные участников будут обновляться в JSON по мере появления.
+              {t(locale, "placeholder.notice")}
             </div>
           )}
 
           {hasOfficialResults && (
-            <div className="mt-5 grid grid-cols-2 rounded-2xl bg-black/25 p-1 ring-1 ring-white/10 sm:max-w-md">
+            <div className="mt-5 grid grid-cols-3 rounded-2xl bg-black/25 p-1 ring-1 ring-white/10 sm:max-w-xl">
+              <button
+                type="button"
+                onClick={() => setViewMode("compare")}
+                className={`h-10 rounded-xl text-sm font-extrabold transition ${
+                  viewMode === "compare" ? "bg-emerald-300 text-slate-950" : "text-white/70 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                {t(locale, "mode.compare")}
+              </button>
               <button
                 type="button"
                 onClick={() => setViewMode("ranking")}
@@ -179,7 +211,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                   viewMode === "ranking" ? "bg-cyan-300 text-slate-950" : "text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
-                Твой рейтинг
+                {t(locale, "mode.ranking")}
               </button>
               <button
                 type="button"
@@ -188,14 +220,14 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                   viewMode === "results" ? "bg-amber-300 text-slate-950" : "text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
-                Результаты
+                {t(locale, "mode.results")}
               </button>
             </div>
           )}
 
-          {viewMode === "ranking" && nextByRunningOrder && (
+          {isEditableMode && nextByRunningOrder && (
             <div className="mt-5 flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/70">
-              <span className="font-black text-white/45">Следующий по running order:</span>
+              <span className="font-black text-white/45">{t(locale, "next.label")}</span>
               <span className="font-black text-white">
                 #{String(nextByRunningOrder.order).padStart(2, "0")} {nextByRunningOrder.country}
               </span>
@@ -206,14 +238,16 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
             </div>
           )}
 
-          {viewMode === "ranking" && (
+          {isEditableMode && (
             <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3 md:grid-cols-[1fr_auto_auto_auto_auto]">
               <label className="relative col-span-2 block md:col-span-1">
                 <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
                 <input
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Найти страну, артиста или песню в списке для добавления"
+                  placeholder={
+                    locale === "ru" ? "Найти страну, артиста или песню в списке для добавления" : "Find a country, artist, or song to add"
+                  }
                   className="h-12 w-full rounded-2xl border border-white/10 bg-black/25 pl-11 pr-11 text-sm font-semibold text-white outline-none placeholder:text-white/35 focus:border-cyan-200/60"
                 />
                 {query && (
@@ -232,7 +266,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                 className="col-span-2 flex h-12 items-center justify-center gap-2 rounded-2xl bg-fuchsia-300 px-4 text-sm font-extrabold leading-none text-slate-950 transition hover:bg-fuchsia-200 disabled:cursor-not-allowed disabled:opacity-40 md:col-span-1"
               >
                 <SkipForward className="h-4 w-4 shrink-0" />
-                <span className="translate-y-[0.5px]">Добавить следующего</span>
+                <span className="translate-y-[0.5px]">{t(locale, "actions.addNext")}</span>
               </button>
 
               <button
@@ -240,7 +274,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                 className="col-span-2 flex h-12 min-w-0 items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-3 text-sm font-extrabold leading-none text-slate-950 transition hover:bg-cyan-200 sm:px-4 md:col-span-1"
               >
                 <Copy className="h-4 w-4 shrink-0" />
-                <span className="translate-y-[0.5px]">{copied ? "Топ скопирован" : "Скопировать топ"}</span>
+                <span className="translate-y-[0.5px]">{copied ? t(locale, "actions.topCopied") : t(locale, "actions.copyTop")}</span>
               </button>
 
               <button
@@ -248,7 +282,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                 className="flex h-12 min-w-0 items-center justify-center gap-2 rounded-2xl bg-white/10 px-3 text-sm font-extrabold leading-none text-white ring-1 ring-white/10 transition hover:bg-white/15 sm:px-4"
               >
                 <Upload className="h-4 w-4 shrink-0" />
-                <span className="translate-y-[0.5px]">Импорт</span>
+                <span className="translate-y-[0.5px]">{t(locale, "actions.import")}</span>
               </button>
 
               <button
@@ -256,7 +290,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                 className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-white/10 px-4 text-sm font-extrabold leading-none text-white ring-1 ring-white/10 transition hover:bg-white/15"
               >
                 <RotateCcw className="h-4 w-4 shrink-0" />
-                <span className="translate-y-[0.5px]">Очистить</span>
+                <span className="translate-y-[0.5px]">{t(locale, "actions.clear")}</span>
               </button>
             </div>
           )}
@@ -265,61 +299,42 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
         {viewMode === "results" && hasOfficialResults ? (
           <section>
             <div className="mb-3 flex items-center justify-between px-1">
-              <h2 className="text-xl font-extrabold tracking-[-0.006em]">Официальные результаты</h2>
-              <span className="text-sm font-bold text-white/45">{resultItems.length} финалистов</span>
+              <h2 className="text-xl font-extrabold tracking-[-0.006em]">{t(locale, "results.heading")}</h2>
+              <span className="text-sm font-bold text-white/45">
+                {resultItems.length} {t(locale, "results.finalists")}
+              </span>
             </div>
 
-            <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/8 backdrop-blur-xl">
-              <div className="hidden grid-cols-[80px_minmax(150px,1fr)_minmax(160px,1.1fr)_90px_100px] gap-3 border-b border-white/10 bg-black/25 px-4 py-3 text-xs font-black uppercase tracking-widest text-white/45 md:grid">
-                <span>Место</span>
-                <span>Страна</span>
-                <span>Песня</span>
-                <span>Очередь</span>
-                <span>Баллы</span>
-              </div>
-
-              <div className="divide-y divide-white/10">
-                {resultItems.map((item) => (
-                  <article
-                    key={item.id}
-                    className="grid gap-3 px-4 py-4 md:grid-cols-[80px_minmax(150px,1fr)_minmax(160px,1.1fr)_90px_100px] md:items-center"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-300 text-sm font-black text-slate-950">
-                        {item.resultRank}
-                      </span>
-                      <span className="text-sm font-black text-white/45 md:hidden">{item.resultPoints} pts</span>
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 font-black text-white">
-                        <span>{item.flag}</span>
-                        <span className="truncate">{item.country}</span>
-                      </div>
-                      <div className="mt-0.5 truncate text-sm font-semibold text-white/60">{item.artist}</div>
-                    </div>
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-extrabold text-white">{item.song}</div>
-                    </div>
-                    <div className="text-sm font-bold text-white/65">#{String(item.order).padStart(2, "0")}</div>
-                    <div className="hidden text-sm font-black text-amber-100 md:block">{item.resultPoints} pts</div>
-                  </article>
-                ))}
-              </div>
+            <div className="space-y-3">
+              {resultItems.map((item, index) => (
+                <RankingCard
+                  key={item.id}
+                  item={item}
+                  rank={item.resultRank ?? index + 1}
+                  image={images[item.id]}
+                  locale={locale}
+                  comparison={getRankComparison(item, personalIndexById.get(item.id))}
+                  mode="official"
+                  total={entries.length}
+                />
+              ))}
             </div>
           </section>
         ) : (
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.85fr)]">
             <section>
               <div className="mb-3 flex items-center justify-between px-1">
-                <h2 className="text-xl font-extrabold tracking-[-0.006em]">Твой рейтинг</h2>
+                <h2 className="text-xl font-extrabold tracking-[-0.006em]">
+                  {viewMode === "compare" && hasOfficialResults ? t(locale, "mode.compare") : t(locale, "ranking.heading")}
+                </h2>
                 <span className="text-sm font-bold text-white/45">
-                  {rankedItems.length ? `${rankedItems.length} в топе` : "ждёт первых оценок"}
+                  {rankedItems.length ? `${rankedItems.length} ${t(locale, "ranking.count")}` : t(locale, "ranking.pending")}
                 </span>
               </div>
 
               {loadStatus === "loading" ? (
                 <div className="rounded-[2rem] border border-white/10 bg-white/6 p-8 text-center text-sm font-semibold text-white/60 backdrop-blur-xl">
-                  Загружаю рейтинг...
+                  {t(locale, "save.loading")}...
                 </div>
               ) : rankedItems.length ? (
                 <div className="space-y-3">
@@ -329,6 +344,8 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                       item={item}
                       rank={index + 1}
                       image={images[item.id]}
+                      locale={locale}
+                      comparison={hasOfficialResults ? getRankComparison(item, index) : undefined}
                       moveUp={() => move(index, -1)}
                       moveDown={() => move(index, 1)}
                       moveTo={(targetIndex) => moveTo(index, targetIndex)}
@@ -341,27 +358,27 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
               ) : (
                 <div className="rounded-[2rem] border border-dashed border-white/15 bg-white/6 p-8 text-center backdrop-blur-xl">
                   <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-3xl bg-white/10 text-3xl">🏆</div>
-                  <h3 className="text-2xl font-extrabold tracking-[-0.006em]">Рейтинг пустой</h3>
-                  <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-white/60">
-                    Добавляй участников плюсиком справа или кнопкой “Добавить следующего”, когда они выступают.
-                  </p>
+                  <h3 className="text-2xl font-extrabold tracking-[-0.006em]">{t(locale, "empty.title")}</h3>
+                  <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-white/60">{t(locale, "empty.body")}</p>
                 </div>
               )}
             </section>
 
             <aside>
               <div className="mb-3 flex items-center justify-between px-1">
-                <h2 className="text-xl font-extrabold tracking-[-0.006em]">Добавить участника</h2>
-                <span className="text-sm font-bold text-white/45">{availableItems.length} осталось</span>
+                <h2 className="text-xl font-extrabold tracking-[-0.006em]">{t(locale, "add.heading")}</h2>
+                <span className="text-sm font-bold text-white/45">
+                  {availableItems.length} {t(locale, "add.remaining")}
+                </span>
               </div>
 
               <div className="space-y-3 lg:max-h-[72vh] lg:overflow-y-auto lg:pr-1">
                 {availableItems.map((item) => (
-                  <AddCard key={item.id} item={item} image={images[item.id]} add={() => add(item.id)} />
+                  <AddCard key={item.id} item={item} image={images[item.id]} locale={locale} add={() => add(item.id)} />
                 ))}
                 {!availableItems.length && (
                   <div className="rounded-3xl border border-white/10 bg-white/8 p-6 text-center text-sm font-semibold text-white/55 backdrop-blur-xl">
-                    Все подходящие участники уже в рейтинге.
+                    {t(locale, "add.empty")}
                   </div>
                 )}
               </div>
@@ -374,14 +391,14 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
             <section className="max-h-[calc(100dvh-1rem)] w-full max-w-2xl overflow-y-auto rounded-t-[2rem] border border-white/10 bg-slate-950 p-4 shadow-2xl shadow-black/40 sm:rounded-[2rem] sm:p-5">
               <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="text-xl font-extrabold tracking-[-0.006em]">Импорт рейтинга</h2>
-                  <p className="mt-1 text-sm leading-6 text-white/60">Вставь нумерованный список в формате “страна: артист - песня”.</p>
+                  <h2 className="text-xl font-extrabold tracking-[-0.006em]">{t(locale, "import.heading")}</h2>
+                  <p className="mt-1 text-sm leading-6 text-white/60">{t(locale, "import.description")}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsImportOpen(false)}
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-white transition hover:bg-white/15"
-                  aria-label="Close import"
+                  aria-label={t(locale, "actions.closeImport")}
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -391,17 +408,17 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                 value={importText}
                 onChange={(event) => setImportText(event.target.value)}
                 className="h-[42dvh] min-h-56 w-full resize-y rounded-2xl border border-white/10 bg-black/30 p-3 text-sm font-semibold leading-6 text-white outline-none placeholder:text-white/35 focus:border-cyan-200/60 sm:min-h-72"
-                placeholder="1. 🇩🇰 Denmark: Søren Torpegaard Lund - Før Vi Går Hjem"
+                placeholder={t(locale, "import.example")}
               />
 
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm font-semibold text-white/60">
                 <span>
-                  Найдено: {importPreview.ids.length}/{entries.length}
-                  {importPreview.unmatchedLines.length ? ` · не распознано: ${importPreview.unmatchedLines.length}` : ""}
+                  {t(locale, "import.found")}: {importPreview.ids.length}/{entries.length}
+                  {importPreview.unmatchedLines.length ? ` · ${t(locale, "import.unmatched")}: ${importPreview.unmatchedLines.length}` : ""}
                 </span>
                 {importPreview.unmatchedLines.length > 0 && (
                   <span className="max-w-full truncate text-amber-100">
-                    Проверь: {importPreview.unmatchedLines.slice(0, 2).join(" · ")}
+                    {t(locale, "import.warning")}: {importPreview.unmatchedLines.slice(0, 2).join(" · ")}
                   </span>
                 )}
               </div>
@@ -412,7 +429,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                   onClick={() => setIsImportOpen(false)}
                   className="h-11 rounded-2xl bg-white/10 px-4 text-sm font-extrabold text-white ring-1 ring-white/10 transition hover:bg-white/15"
                 >
-                  Отмена
+                  {t(locale, "actions.cancel")}
                 </button>
                 <button
                   type="button"
@@ -420,7 +437,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
                   disabled={!importPreview.ids.length}
                   className="h-11 rounded-2xl bg-cyan-300 px-4 text-sm font-extrabold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Заменить рейтинг
+                  {t(locale, "actions.replaceRanking")}
                 </button>
               </div>
             </section>
@@ -428,8 +445,7 @@ export default function Ranker({ contest, contests, activeContestId, userKey, on
         )}
 
         <footer className="mt-5 rounded-3xl border border-white/10 bg-white/8 p-4 text-sm leading-6 text-white/60 backdrop-blur-xl">
-          Рейтинг сохраняется на сервере для выбранного ключа и конкурса. Wiki-кнопки открывают страницы напрямую. Если фото не нашлось или
-          оно сомнительное, показывается флаг-заглушка.
+          {t(locale, "footer")}
         </footer>
       </section>
     </main>

@@ -21,8 +21,7 @@ describe("contest data", () => {
       for (const entry of contest.entries) {
         expect(entry.id, `${contest.id} entry id`).toBeTruthy();
         expect(entry.country, `${contest.id}.${entry.id} country`).toBeTruthy();
-        expect(entry.flag, `${contest.id}.${entry.id} flag`).toBeTruthy();
-        expect(entry.code, `${contest.id}.${entry.id} code`).toBeTruthy();
+        expect(entry.code, `${contest.id}.${entry.id} code`).toMatch(/^[a-z]{2}$/);
         expect(entry.artist, `${contest.id}.${entry.id} artist`).toBeTruthy();
         expect(entry.song, `${contest.id}.${entry.id} song`).toBeTruthy();
       }

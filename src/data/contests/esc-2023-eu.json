@@ -9,6 +9,17 @@
   "status": "complete",
   "description": "Исторический финал: собирай личный рейтинг и сравнивай его с официальным результатом.",
   "sourceUrl": "https://en.wikipedia.org/wiki/Eurovision_Song_Contest_2023#Final_2",
+  "i18n": {
+    "en": {
+      "description": "Historical final: build a personal ranking and compare it with the official result."
+    },
+    "ru": {
+      "label": "Евровидение 2023 · Европа",
+      "title": "Рейтинг финала Евровидения 2023",
+      "badge": "Ливерпуль 2023",
+      "description": "Исторический финал: собирай личный рейтинг и сравнивай его с официальным результатом."
+    }
+  },
   "entries": [
     { "id": "austria", "order": 1, "country": "Austria", "flag": "🇦🇹", "code": "at", "artist": "Teya and Salena", "song": "Who the Hell Is Edgar?", "resultRank": 15, "resultPoints": 120 },
     { "id": "portugal", "order": 2, "country": "Portugal", "flag": "🇵🇹", "code": "pt", "artist": "Mimicat", "song": "Ai coração", "resultRank": 23, "resultPoints": 59 },

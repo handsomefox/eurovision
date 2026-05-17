@@ -55,4 +55,17 @@ describe("contest validation", () => {
       })
     ).toThrow("duplicate result rank");
   });
+
+  it("requires lowercase country codes instead of emoji flags", () => {
+    expect(
+      validateContest({ ...validContest, entries: validContest.entries.map((entry) => ({ ...entry, flag: undefined })) }).entries[0].code
+    ).toBe("gb");
+
+    expect(() =>
+      validateContest({
+        ...validContest,
+        entries: [{ ...validContest.entries[0], code: "GB" }, validContest.entries[1]]
+      })
+    ).toThrow("lowercase ISO country code");
+  });
 });

@@ -9,6 +9,17 @@
   "status": "complete",
   "description": "Исторический финал: собирай личный рейтинг и сравнивай его с официальным результатом.",
   "sourceUrl": "https://en.wikipedia.org/wiki/Eurovision_Song_Contest_2024#Final_2",
+  "i18n": {
+    "en": {
+      "description": "Historical final: build a personal ranking and compare it with the official result."
+    },
+    "ru": {
+      "label": "Евровидение 2024 · Европа",
+      "title": "Рейтинг финала Евровидения 2024",
+      "badge": "Мальме 2024",
+      "description": "Исторический финал: собирай личный рейтинг и сравнивай его с официальным результатом."
+    }
+  },
   "entries": [
     { "id": "sweden", "order": 1, "country": "Sweden", "flag": "🇸🇪", "code": "se", "artist": "Marcus & Martinus", "song": "Unforgettable", "resultRank": 9, "resultPoints": 174 },
     { "id": "ukraine", "order": 2, "country": "Ukraine", "flag": "🇺🇦", "code": "ua", "artist": "Alyona Alyona and Jerry Heil", "song": "Teresa & Maria", "resultRank": 3, "resultPoints": 453 },

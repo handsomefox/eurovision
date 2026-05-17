@@ -9,6 +9,17 @@
   "status": "complete",
   "description": "Исторический финал: собирай личный рейтинг и сравнивай его с официальным результатом.",
   "sourceUrl": "https://en.wikipedia.org/wiki/Eurovision_Song_Contest_2025#Final_2",
+  "i18n": {
+    "en": {
+      "description": "Historical final: build a personal ranking and compare it with the official result."
+    },
+    "ru": {
+      "label": "Евровидение 2025 · Европа",
+      "title": "Рейтинг финала Евровидения 2025",
+      "badge": "Базель 2025",
+      "description": "Исторический финал: собирай личный рейтинг и сравнивай его с официальным результатом."
+    }
+  },
   "entries": [
     { "id": "norway", "order": 1, "country": "Norway", "flag": "🇳🇴", "code": "no", "artist": "Kyle Alessandro", "song": "Lighter", "resultRank": 18, "resultPoints": 89 },
     { "id": "luxembourg", "order": 2, "country": "Luxembourg", "flag": "🇱🇺", "code": "lu", "artist": "Laura Thorn", "song": "La poupée monte le son", "resultRank": 22, "resultPoints": 47 },

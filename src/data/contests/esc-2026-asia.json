@@ -9,6 +9,17 @@
   "status": "placeholder",
   "description": "Артисты и песни будут добавляться по мере появления данных.",
   "sourceUrl": "https://www.eurovision.com/asia/",
+  "i18n": {
+    "en": {
+      "description": "Artists and songs will be added as data appears."
+    },
+    "ru": {
+      "label": "Евровидение Азия 2026",
+      "title": "Eurovision Song Contest Asia 2026",
+      "badge": "Бангкок · 14 ноября 2026",
+      "description": "Артисты и песни будут добавляться по мере появления данных."
+    }
+  },
   "entries": [
     {
       "id": "asia-2026-thailand",

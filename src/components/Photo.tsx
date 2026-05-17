@@ -1,9 +1,12 @@
 import { useEffect, useState, type FocusEvent } from "react";
-import type { Entry, WikiImage } from "../types";
+import { t } from "../lib/i18n";
+import type { Entry, Locale, WikiImage } from "../types";
+import Flag from "./Flag";
 
 type PhotoProps = {
   item: Entry;
   image?: WikiImage;
+  locale: Locale;
   compact?: boolean;
   rank?: number;
   total?: number;
@@ -11,7 +14,7 @@ type PhotoProps = {
   hideFlagOverlay?: boolean;
 };
 
-export default function Photo({ item, image, compact = false, rank, total, onRankInput, hideFlagOverlay = false }: PhotoProps) {
+export default function Photo({ item, image, locale, compact = false, rank, total, onRankInput, hideFlagOverlay = false }: PhotoProps) {
   const size = compact ? "h-16 w-16" : "h-24 w-24 sm:h-28 sm:w-28";
   const hasRankInput = typeof rank === "number" && typeof onRankInput === "function";
   const [imageBroken, setImageBroken] = useState(false);
@@ -37,12 +40,10 @@ export default function Photo({ item, image, compact = false, rank, total, onRan
         />
       ) : (
         <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-white/10 to-white/5 p-2 text-center">
-          <img
-            src={`https://flagcdn.com/w80/${item.code}.png`}
-            alt={item.country}
-            className="h-8 w-12 rounded-md object-cover shadow-lg ring-1 ring-white/20"
-          />
-          {!compact && <span className="mt-2 text-[10px] font-semibold uppercase tracking-wide text-white/45">flag</span>}
+          <Flag item={item} size="lg" className="shadow-lg" />
+          {!compact && (
+            <span className="mt-2 text-[10px] font-semibold uppercase tracking-wide text-white/45">{t(locale, "photo.flag")}</span>
+          )}
         </div>
       )}
 
@@ -65,7 +66,7 @@ export default function Photo({ item, image, compact = false, rank, total, onRan
             />
           )}
           <div className="flex h-7 items-center px-2">
-            <img src={`https://flagcdn.com/w40/${item.code}.png`} alt={item.country} className="h-3 w-5 rounded-[2px] object-cover" />
+            <Flag item={item} size="sm" />
           </div>
         </div>
       )}
