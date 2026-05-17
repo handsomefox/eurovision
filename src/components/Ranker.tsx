@@ -53,14 +53,14 @@ export default function Ranker({
   const images = useWikiImages(entries);
   const { rankingIds, setRankingIds, loadStatus, saveStatus } = useSavedRanking({ byId, contestId: contest.id, userKey });
   const hasOfficialResults = entries.every((entry) => entry.resultRank !== undefined && entry.resultPoints !== undefined);
-  const isEditableMode = viewMode !== "results";
+  const isEditableMode = viewMode === "ranking";
 
   useEffect(() => {
     setQuery("");
     setCopied(false);
     setIsImportOpen(false);
     setImportText("");
-    setViewMode(hasOfficialResults ? "compare" : "ranking");
+    setViewMode("ranking");
   }, [contest.id, hasOfficialResults]);
 
   const rankedItems = useMemo(
@@ -197,21 +197,21 @@ export default function Ranker({
             <div className="mt-5 grid grid-cols-3 rounded-2xl bg-black/25 p-1 ring-1 ring-white/10 sm:max-w-xl">
               <button
                 type="button"
-                onClick={() => setViewMode("compare")}
-                className={`h-10 rounded-xl text-sm font-extrabold transition ${
-                  viewMode === "compare" ? "bg-emerald-300 text-slate-950" : "text-white/70 hover:bg-white/10 hover:text-white"
-                }`}
-              >
-                {t(locale, "mode.compare")}
-              </button>
-              <button
-                type="button"
                 onClick={() => setViewMode("ranking")}
                 className={`h-10 rounded-xl text-sm font-extrabold transition ${
                   viewMode === "ranking" ? "bg-cyan-300 text-slate-950" : "text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 {t(locale, "mode.ranking")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("compare")}
+                className={`h-10 rounded-xl text-sm font-extrabold transition ${
+                  viewMode === "compare" ? "bg-emerald-300 text-slate-950" : "text-white/70 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                {t(locale, "mode.compare")}
               </button>
               <button
                 type="button"
@@ -296,7 +296,68 @@ export default function Ranker({
           )}
         </header>
 
-        {viewMode === "results" && hasOfficialResults ? (
+        {viewMode === "compare" && hasOfficialResults ? (
+          <section className="grid gap-5 lg:grid-cols-2">
+            <div>
+              <div className="mb-3 flex items-center justify-between px-1">
+                <h2 className="text-xl font-extrabold tracking-[-0.006em]">{t(locale, "ranking.heading")}</h2>
+                <span className="text-sm font-bold text-white/45">
+                  {rankedItems.length ? `${rankedItems.length} ${t(locale, "ranking.count")}` : t(locale, "ranking.pending")}
+                </span>
+              </div>
+
+              {loadStatus === "loading" ? (
+                <div className="rounded-[2rem] border border-white/10 bg-white/6 p-8 text-center text-sm font-semibold text-white/60 backdrop-blur-xl">
+                  {t(locale, "save.loading")}...
+                </div>
+              ) : rankedItems.length ? (
+                <div className="space-y-3">
+                  {rankedItems.map((item, index) => (
+                    <RankingCard
+                      key={item.id}
+                      item={item}
+                      rank={index + 1}
+                      image={images[item.id]}
+                      locale={locale}
+                      comparison={getRankComparison(item, index)}
+                      total={rankedItems.length}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-[2rem] border border-dashed border-white/15 bg-white/6 p-8 text-center backdrop-blur-xl">
+                  <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-3xl bg-white/10 text-3xl">🏆</div>
+                  <h3 className="text-2xl font-extrabold tracking-[-0.006em]">{t(locale, "empty.title")}</h3>
+                  <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-white/60">{t(locale, "empty.body")}</p>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <div className="mb-3 flex items-center justify-between px-1">
+                <h2 className="text-xl font-extrabold tracking-[-0.006em]">{t(locale, "results.heading")}</h2>
+                <span className="text-sm font-bold text-white/45">
+                  {resultItems.length} {t(locale, "results.finalists")}
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {resultItems.map((item, index) => (
+                  <RankingCard
+                    key={item.id}
+                    item={item}
+                    rank={item.resultRank ?? index + 1}
+                    image={images[item.id]}
+                    locale={locale}
+                    comparison={getRankComparison(item, personalIndexById.get(item.id))}
+                    mode="official"
+                    total={entries.length}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : viewMode === "results" && hasOfficialResults ? (
           <section>
             <div className="mb-3 flex items-center justify-between px-1">
               <h2 className="text-xl font-extrabold tracking-[-0.006em]">{t(locale, "results.heading")}</h2>
@@ -324,9 +385,7 @@ export default function Ranker({
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.85fr)]">
             <section>
               <div className="mb-3 flex items-center justify-between px-1">
-                <h2 className="text-xl font-extrabold tracking-[-0.006em]">
-                  {viewMode === "compare" && hasOfficialResults ? t(locale, "mode.compare") : t(locale, "ranking.heading")}
-                </h2>
+                <h2 className="text-xl font-extrabold tracking-[-0.006em]">{t(locale, "ranking.heading")}</h2>
                 <span className="text-sm font-bold text-white/45">
                   {rankedItems.length ? `${rankedItems.length} ${t(locale, "ranking.count")}` : t(locale, "ranking.pending")}
                 </span>
