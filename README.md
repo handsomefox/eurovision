@@ -27,7 +27,7 @@ Further reading:
 
 ## What you need
 
-A recent Node release. The Dockerfile pins 22.21.1, the checks below last ran on 24.20.0, and `better-sqlite3` declares support for 20, 22, 23, 24, and 25.
+A recent Node release. The Dockerfile pins 22.23.4, the checks below last ran on 24.20.0, and `better-sqlite3` declares support for 20, 22, 23, 24, and 25.
 
 `better-sqlite3` compiles a native module during `npm ci`. If your npm config sets `ignore-scripts=true`, the install finishes but the module is missing, and every database call fails with "Could not locate the bindings file". Build it once:
 
