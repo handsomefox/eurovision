@@ -16,8 +16,8 @@ A contest is one JSON file under `src/data/contests/` plus one line in the regis
 
    Array order is the order of the contest picker, and the first contest is the default for a visitor with no saved choice.
 
-4. Run `npm test`. Then restart `npm start`, because the server builds its contest catalog once at startup and rejects saves for a contest it has not seen.
-5. Run `npm run dev` and open the contest.
+4. Run `pnpm test`. Then restart `pnpm start`, because the server builds its contest catalog once at startup and rejects saves for a contest it has not seen.
+5. Run `pnpm run dev` and open the contest.
 
 If you skip step 3, the API still accepts rankings for the contest, because the server reads the whole directory, but nobody can select it in the UI.
 
@@ -111,7 +111,7 @@ Validation runs twice, and neither pass is a lint step you can skip.
 
 `validateContests` in `src/lib/contestValidation.ts` runs in the browser when `src/lib/contestModel.ts` is first imported. A bad file throws before the app renders, and the message names the contest, the entry, and the field.
 
-`loadContestCatalog` in `server/contestCatalog.ts` runs at server startup over every `.json` file in the directory. A bad file stops `npm start`.
+`loadContestCatalog` in `server/contestCatalog.ts` runs at server startup over every `.json` file in the directory. A bad file stops `pnpm start`.
 
 Both passes reject:
 
@@ -123,6 +123,6 @@ Both passes reject:
 
 The two passes then differ, and the union of them is what your file has to satisfy. The browser pass alone checks the contest metadata (`year`, `family`, `region`, `label`, `title`, `badge`, `description`, `sourceUrl`), the `status` enum, the `i18n` locale keys, the two-lowercase-letter `code` pattern, the types of the optional entry fields, and that results are non-negative integers. The server pass alone requires `flag`.
 
-`npm test` covers the browser pass over your real file, because `tests/contestData.test.ts` imports the registry through `src/lib/contestModel.ts`. It does not cover the server pass over real data, because `tests/contestCatalog.test.ts` builds temporary fixtures instead. A file that omits `flag` passes `npm test` and then stops `npm start`, so start the server once before you deploy.
+`pnpm test` covers the browser pass over your real file, because `tests/contestData.test.ts` imports the registry through `src/lib/contestModel.ts`. It does not cover the server pass over real data, because `tests/contestCatalog.test.ts` builds temporary fixtures instead. A file that omits `flag` passes `pnpm test` and then stops `pnpm start`, so start the server once before you deploy.
 
 `tests/contestData.test.ts` also pins the entry counts of the six contests listed in `expectedHistoricalCounts`. Changing the lineup of one of those years fails the test until you update the count there.

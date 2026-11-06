@@ -1,0 +1,10 @@
+# Supply-chain policy for every install, including the Fly image build. See
+# https://pnpm.io/supply-chain-security.
+minimumReleaseAge: 10080
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 43200
+
+# better-sqlite3 needs its install script to fetch or compile the native addon.
+# Review a new version's script before you bump it.
+allowBuilds:
+  better-sqlite3: true

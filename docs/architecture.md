@@ -6,7 +6,7 @@ The job is narrow. A handful of people rank one Grand Final on their phones whil
 
 `server/index.ts` opens the database, builds the Express app, and listens. With `NODE_ENV=production` the same app serves `dist/` and falls back to `index.html` for GET requests outside `/api`. One process, one port, one deploy.
 
-The alternative was a static host for the frontend and a separate API service. That means two deploys, a CORS setup, and a second thing to keep awake, all for a client bundle that `npm run build` reports at about 280 kB. Not worth it at this size.
+The alternative was a static host for the frontend and a separate API service. That means two deploys, a CORS setup, and a second thing to keep awake, all for a client bundle that `pnpm run build` reports at about 280 kB. Not worth it at this size.
 
 Next.js was considered early and dropped. The routing, server components, and build model solve problems this app does not have. It is one page with a query parameter.
 
@@ -55,8 +55,8 @@ On purpose: no router, no accounts, no admin UI, no migration table. Each of the
 Not on purpose:
 
 - `flag` is required by the server loader but never read by the UI, which draws flags from `code` through flagcdn.com. Every contest file carries emoji nobody sees.
-- There is no CI workflow, so `npm test`, `npm run lint`, `npm run typecheck`, and `npm run fmt:check` only run when somebody remembers.
-- There is no watch script for the server. Backend edits need `npx tsc -p tsconfig.server.json` and a restart.
+- There is no CI workflow, so `pnpm test`, `pnpm run lint`, `pnpm run typecheck`, and `pnpm run fmt:check` only run when somebody remembers.
+- There is no watch script for the server. Backend edits need `pnpm exec tsc -p tsconfig.server.json` and a restart.
 - A schema change would have to be applied by hand, because `initializeDatabase` only ever runs `CREATE TABLE IF NOT EXISTS`.
 
 Ideas worth doing before any of the above: a read-only share link for a finished ranking, and one page that shows every ranking saved under a key instead of one contest at a time.

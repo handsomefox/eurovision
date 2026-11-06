@@ -6,9 +6,9 @@ The [README](README.md) covers running the app and the checks. [Architecture dec
 
 A contest is a JSON file in `src/data/contests/` and an explicit import in `src/data/contestRegistry.ts`. Do both. The server scans the directory and the browser reads the registry, so a file that exists but is unregistered is writable through the API and invisible in the UI. [How to add a contest](docs/contests.md) has the field list.
 
-## Two validators, and `npm test` only covers one
+## Two validators, and `pnpm test` only covers one
 
-`validateContests` in `src/lib/contestValidation.ts` runs in the browser. `loadContestCatalog` in `server/contestCatalog.ts` runs at server startup. Their rules overlap but are not identical, and only the server pass requires `flag`. `tests/contestData.test.ts` exercises the browser pass over the real files; `tests/contestCatalog.test.ts` uses fixtures. A file missing `flag` therefore passes `npm test` and then stops `npm start`, so start the server once before you deploy.
+`validateContests` in `src/lib/contestValidation.ts` runs in the browser. `loadContestCatalog` in `server/contestCatalog.ts` runs at server startup. Their rules overlap but are not identical, and only the server pass requires `flag`. `tests/contestData.test.ts` exercises the browser pass over the real files; `tests/contestCatalog.test.ts` uses fixtures. A file missing `flag` therefore passes `pnpm test` and then stops `pnpm start`, so start the server once before you deploy.
 
 `tests/contestData.test.ts` also pins entry counts in `expectedHistoricalCounts`. Changing a past lineup fails that test until you update the number there.
 
@@ -31,10 +31,10 @@ There is no migration system. A schema change means editing `initializeDatabase`
 There is no CI workflow, so nothing runs these but you:
 
 ```sh
-npm test
-npm run typecheck
-npm run lint
-npm run fmt:check
+pnpm test
+pnpm run typecheck
+pnpm run lint
+pnpm run fmt:check
 ```
 
-Frontend edits hot-reload. Backend edits do not: recompile with `npx tsc -p tsconfig.server.json` and restart `npm start`.
+Frontend edits hot-reload. Backend edits do not: recompile with `pnpm exec tsc -p tsconfig.server.json` and restart `pnpm start`.
